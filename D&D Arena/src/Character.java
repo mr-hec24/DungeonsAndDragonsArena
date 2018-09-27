@@ -29,9 +29,11 @@ public class Character
 			return roll;
 		}
 		
-		public int rollToHit()
+		public int rollToHit(Character c)
 		{
 			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
+			if ()
+			
 			
 			return roll;
 		}
@@ -46,7 +48,54 @@ public class Character
 			this.hitPoints += hitpoints;
 		}
 		
-		
+		public void useAbility()
+		{
+			switch(this.getClassAbilityName())
+			{
+				case "Rage":
+						{
+							int damage = this.rollDamage() + (int)(Math.random()*4)+1;
+							System.out.println("With Rage, you dealt " + damage + " damage!");
+							break;
+						}
+				case "Heal":
+						{
+							break;
+						}
+				case "Shapeshift":
+						{
+							break;
+						}
+				case "Sneak":
+						{
+							break;
+						}
+				case "Casting":
+						{
+							break;
+						}
+				case "Summon Dead":
+						{
+							break;
+						}
+				case "Summon Elements":
+						{
+							break;
+						}
+				case "Perform":
+						{
+							break;
+						}
+				case "Martial Arts":
+						{
+							break;
+						}
+				case "Smite":
+						{
+							break;
+						}
+			}
+		}
 		
 		
 		

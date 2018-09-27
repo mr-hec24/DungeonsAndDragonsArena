@@ -94,7 +94,7 @@ public class Main
 											characterClass = "Barabrian";
 											abilityName = "Rage";
 											ability = "Deal an extra 1d4 damage on your next turn.";
-											weapon = new Weapon("Battleaxe", 10, 2);
+											weapon = new Weapon("Battleaxe", 10, 2, 1);
 											hp = 10;
 											armorClass = 12;
 											speed = 5;
