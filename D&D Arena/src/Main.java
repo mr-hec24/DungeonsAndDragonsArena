@@ -128,7 +128,7 @@ public class Main
 								}
 						case 3:			//Druid
 								{
-									System.out.println("As a Druid, you gain the ability Shapeshift, which ____");
+									System.out.println("As a Druid, you gain the ability Shapeshift, which allows you to change your form into an owlbear.");
 									System.out.println("Your weapon is a ___, which deals ___ + _ damage. You have __ hit points, and your armor class is ___.");
 									System.out.println("You can move __ squares per turn.");
 									System.out.println(" ");

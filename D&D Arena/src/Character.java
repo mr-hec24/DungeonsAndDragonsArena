@@ -21,21 +21,32 @@ public class Character
 			armorClass = a;
 			speed = sp;
 		}
-
-		public int rollDamage()
-		{
-			int roll = (int)(Math.random()*this.getWeapon().getDamage())+1;
-			
-			return roll;
-		}
 		
-		public int rollToHit(Character c)
+		public String rollToHit(Character c)
 		{
 			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
-			if ()
+			if (roll > c.getArmorClass())
+				{	
+					return "You hit " + c.getName() + " with your " + this.getWeapon().getName() + ".";
+				}
+			else
+				{
+					return "You came up to attack with your " + this.getWeapon().getName() + " but you missed";
+				}
+		}
+		
+		public int rollForDamage()
+		{
+			int damage = (int)(Math.random()*this.getWeapon().getDamage())+1;
+			return damage;
+		}
+		
+		public String dealDamage(Character c)
+		{
+			int damage = rollForDamage();
+			c.takeDamage(damage);
 			
-			
-			return roll;
+			return this.getName() + " dealt " + damage + " to " + c.getName();
 		}
 		
 		public void takeDamage(int damage)
@@ -43,58 +54,95 @@ public class Character
 			this.hitPoints -= damage;
 		}
 		
-		public void heal(int hitpoints)
+		public void getHealed(int hitpoints)
 		{
 			this.hitPoints += hitpoints;
 		}
 		
-		public void useAbility()
+		public String rage()
 		{
-			switch(this.getClassAbilityName())
-			{
-				case "Rage":
-						{
-							int damage = this.rollDamage() + (int)(Math.random()*4)+1;
-							System.out.println("With Rage, you dealt " + damage + " damage!");
-							break;
-						}
-				case "Heal":
-						{
-							break;
-						}
-				case "Shapeshift":
-						{
-							break;
-						}
-				case "Sneak":
-						{
-							break;
-						}
-				case "Casting":
-						{
-							break;
-						}
-				case "Summon Dead":
-						{
-							break;
-						}
-				case "Summon Elements":
-						{
-							break;
-						}
-				case "Perform":
-						{
-							break;
-						}
-				case "Martial Arts":
-						{
-							break;
-						}
-				case "Smite":
-						{
-							break;
-						}
-			}
+			int extraDamage = (int)(Math.random()*4)+1;
+			
+			return "Due to your rage, you dealt " + extraDamage + " more damage.";
+		}
+		
+		public String heal(Character c1, Character c2)
+		{
+			int heal = (int)(Math.random()*6)+1;
+			
+			c1.getHealed(heal);
+			c2.getHealed(heal);
+			
+			return c1.getName() + " and " + c2.getName() + " were healed " + heal + " damage.";
+		}
+		
+		public String casting(Character c)
+		{
+			String[] spells = {"Fire Ball","Ice Shards","Lightning Bolt","Hail Storm"};
+			int randomSpell = (int)(Math.random()*spells.length); 
+			
+			int roll = (int)(Math.random()*20) + 1;
+			if (roll > c.getArmorClass())
+				{	
+					int damage = (int)(Math.random()*6)+1;
+			
+					return "You cast " + spells[randomSpell] + " to " + c.getName() + " which dealt " + damage + " damage.";
+				}
+			else
+			
+				{
+					return "You attempted to cast " + spells[randomSpell] + " to " + c.getName() + ", but you missed."; 
+				}
+			
+		}
+		
+//		public void useAbility()
+//		{
+//			switch(this.getClassAbilityName())
+//			{
+//				case "Rage":
+//						{
+//							rage();
+//							break;
+//						}
+//				case "Heal":
+//						{
+//							
+//							break;
+//						}
+//				case "Vines":
+//						{
+//							break;
+//						}
+//				case "Sneak":
+//						{
+//							break;
+//						}
+//				case "Casting":
+//						{
+//							break;
+//						}
+//				case "Summon Dead":
+//						{
+//							break;
+//						}
+//				case "Summon Elements":
+//						{
+//							break;
+//						}
+//				case "Perform":
+//						{
+//							break;
+//						}
+//				case "Martial Arts":
+//						{
+//							break;
+//						}
+//				case "Smite":
+//						{
+//							break;
+//						}
+//			}
 		}
 		
 		
