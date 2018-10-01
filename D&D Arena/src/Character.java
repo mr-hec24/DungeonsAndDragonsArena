@@ -59,21 +59,29 @@ public class Character
 			this.hitPoints += hitpoints;
 		}
 		
-		public String rage()
+		public String rage(Character c)
 		{
 			int extraDamage = (int)(Math.random()*4)+1;
+			
+			c.takeDamage(extraDamage);
 			
 			return "Due to your rage, you dealt " + extraDamage + " more damage.";
 		}
 		
-		public String heal(Character c1, Character c2)
+		public String heal(Character c1)
 		{
 			int heal = (int)(Math.random()*6)+1;
 			
 			c1.getHealed(heal);
-			c2.getHealed(heal);
 			
-			return c1.getName() + " and " + c2.getName() + " were healed " + heal + " damage.";
+			return c1.getName() + " was healed " + heal + " damage.";
+		}
+		
+		public String vines(Character c)
+		{
+			c.setSpeed(0);
+			
+			return c.getName() + " can't move for it's next turn.";
 		}
 		
 		public String casting(Character c)
@@ -95,6 +103,8 @@ public class Character
 				}
 			
 		}
+		
+		
 		
 //		public void useAbility()
 //		{
@@ -126,7 +136,7 @@ public class Character
 //						{
 //							break;
 //						}
-//				case "Summon Elements":
+//				case "Evade":
 //						{
 //							break;
 //						}
@@ -143,7 +153,7 @@ public class Character
 //							break;
 //						}
 //			}
-		}
+//		}
 		
 		
 		

@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main
 	{
@@ -16,9 +17,15 @@ public class Main
 		static int armorClass;
 		static int speed;
 		
+		static ArrayList<Character> players = new ArrayList<Character>();
+		static ArrayList<Character> enemies = new ArrayList<Character>();
+		static Character[][] arena;
+		
 		public static void main(String[]args)
 		{
 			titleScreen();
+			askForMapLevel();
+			generateEnemies();
 		}
 		
 		public static void titleScreen()
@@ -31,8 +38,8 @@ public class Main
 			boolean choosing = true;
 			do
 				{
-					System.out.println("1.) Single player");
-					System.out.println("2.) Multiplayer");
+					System.out.println("{1} Single player");
+					System.out.println("{2} Multiplayer");
 					choice = userInput.nextInt();
 					
 					userChoice = choice == 1? "Single Player" : "Multiplayer";
@@ -56,22 +63,22 @@ public class Main
 		}
 		
 		public static void createCharacter()
-		{
+		{	
 			System.out.println("Character Creation");
 			boolean choosingClass = true;
 			while(choosingClass)
 				{
 					System.out.println("Choose a class:");
-					System.out.println("1) Barbarian");
-					System.out.println("2) Cleric");
-					System.out.println("3) Druid");
-					System.out.println("4) Rogue");
-					System.out.println("5) Wizard");
-					System.out.println("6) Warlock");
-					System.out.println("7) Sorcerer");
-					System.out.println("8) Bard");
-					System.out.println("9) Monk");
-					System.out.println("10) Paladin");
+					System.out.println("{1} Barbarian");
+					System.out.println("{2} Cleric");
+					System.out.println("{3} Druid");
+					System.out.println("{4} Rogue");
+					System.out.println("{5} Wizard");
+					System.out.println("{6} Warlock");
+					System.out.println("{7} Sorcerer");
+					System.out.println("{8} Bard");
+					System.out.println("{9} Monk");
+					System.out.println("{10} Paladin");
 					
 					int choice = userInput.nextInt();
 					
@@ -81,7 +88,7 @@ public class Main
 								{
 									System.out.println("As a Barbarian, you gain the ability Rage, which makes your next turn deal an extra 1d4 of damage.");
 									System.out.println("Your weapon is a Battleaxe, which deals 1d10 damage. You have 10 hit points, and your armor class is 12.");
-									System.out.println("You can move 4 squares per turn, and your to hit modifier is 2.");
+									System.out.println("You can move 4 squares per turn and your to hit modifier is 2.");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -104,7 +111,7 @@ public class Main
 								}
 						case 2:			//Cleric
 								{
-									System.out.println("As a Cleric, you gain the ability Heal, which heals 1d6 damage to any ally adjacent to you.");
+									System.out.println("As a Cleric, you gain the ability Heal, which heals 1d6 damage to an ally of your choice.");
 									System.out.println("Your weapon is a Mace, which deals 1d6 damage. You have 8 hit points, and your armor class is 14.");
 									System.out.println("You can move 3 squares per turn and your to hit modifier is 2.");
 									System.out.println(" ");
@@ -128,9 +135,9 @@ public class Main
 								}
 						case 3:			//Druid
 								{
-									System.out.println("As a Druid, you gain the ability Vines, which allows you to make one enemy of your choice immobile for one turn");
+									System.out.println("As a Druid, you gain the ability Vines, which allows you to make one enemy of your choice immobile for one turn.");
 									System.out.println("Your weapon is a Mace, which deals 1d6 damage. You have 8 hit points, and your armor class is 13.");
-									System.out.println("You can move 3 squares per turn.");
+									System.out.println("You can move 3 squares per turn and your to hit modifier is 2.");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -154,7 +161,7 @@ public class Main
 								{
 									System.out.println("As a Rogue, you gain the ability Sneak, which allows you to move 2 squares after you attack.");
 									System.out.println("Your weapon is a Dagger, which deals 1d4 damage. You have 10 hit points, and your armor class is 10.");
-									System.out.println("You can move 5 squares per turn, and your to hit modifier is 5");
+									System.out.println("You can move 5 squares per turn and your to hit modifier is 5");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -178,7 +185,7 @@ public class Main
 								{
 									System.out.println("As a Wizard, you gain the ability Casting, which allows you to cast a random spell at an Enemy and deal 1d6 damage.");
 									System.out.println("Your weapon is a Shortsword, which deals 1d5 damage. You have 5 hit points, and your armor class is 14.");
-									System.out.println("You can move 2 squares per turn, and your to hit modifier is 1.");
+									System.out.println("You can move 2 squares per turn and your to hit modifier is 1.");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -272,9 +279,9 @@ public class Main
 								}
 						case 9:			//Monk
 								{
-									System.out.println("As a Cleric, you gain the ability ____, which ____");
-									System.out.println("Your weapon is a ___, which deals ___ + _ damage. You have __ hit points, and your armor class is ___.");
-									System.out.println("You can move __ squares per turn.");
+									System.out.println("As a Monk, you gain the ability Martial Arts, which allows you to attack again in a turn with your weapon.");
+									System.out.println("Your weapon is a Javelin, which deals 1d8 damage. You have 6 hit points, and your armor class is 10.");
+									System.out.println("You can move 2 squares per turn and your to hit modifier is 2.");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -284,20 +291,21 @@ public class Main
 									if (choice == 1)
 										{
 											choosingClass = false;
-											characterClass = "___";
-											ability = "___";
-											weapon = new Weapon("___", N/A, N/A);
-											hp = N/A
-											armorClass = N/A;
-											speed = N/A;
+											characterClass = "Monk";
+											abilityName = "Martial Arts";
+											ability = "Allows you to attack again with weapon.";
+											weapon = new Weapon("Javelin", 8, 2, 2);
+											hp = 6;
+											armorClass = 10;
+											speed = 2;
 										}
 									break;
 								}
 						case 10:		//Paladin
 								{
-									System.out.println("As a Cleric, you gain the ability ____, which ____");
-									System.out.println("Your weapon is a ___, which deals ___ + _ damage. You have __ hit points, and your armor class is ___.");
-									System.out.println("You can move __ squares per turn.");
+									System.out.println("As a Paladin, you gain the ability Smite, which deals 1d8 damage to one of your Enemies.");
+									System.out.println("Your weapon is a Greatsword, which deals 1d6 damage. You have 8 hit points, and your armor class is 14.");
+									System.out.println("You can move 3 squares per turn and your to hit modifier is 2.");
 									System.out.println(" ");
 									System.out.println("Would you like to choose this class?");
 									System.out.println("1.) Yes");
@@ -307,12 +315,13 @@ public class Main
 									if (choice == 1)
 										{
 											choosingClass = false;
-											characterClass = "___";
-											ability = "___";
-											weapon = new Weapon("___", N/A, N/A);
-											hp = N/A
-											armorClass = N/A;
-											speed = N/A;
+											characterClass = "Paladin";
+											abilityName = "Smite";
+											ability = "Deal 1d8 damage to one of your Enemies";
+											weapon = new Weapon("Greatword", 6, 2, 1);
+											hp = 8;
+											armorClass = 14;
+											speed = 3;
 										}
 									break;
 								}
@@ -325,9 +334,9 @@ public class Main
 					System.out.println("Name Your Character:");
 					
 					userInputString = new Scanner(System.in);
-					String characterName = userInputString.nextLine();
+					name = userInputString.nextLine();
 					
-					System.out.println("Is " + characterName + " correct?");
+					System.out.println("Is " + name + " correct?");
 					System.out.println("1.) Yes");
 					System.out.println("2.) No");
 					
@@ -339,5 +348,84 @@ public class Main
 						}
 				}
 			
+			players.add(new Character(name, characterClass, abilityName, ability, weapon, hp, armorClass, speed));
+			
+			System.out.println(name + " has been added to the campaign!");
 		}
+	
+		public static void askForMapLevel()
+		{
+			boolean choosingMap = true;
+			
+			while (choosingMap == true)
+				{
+					System.out.println("Choose a map level");
+					System.out.println("{1} Simple (4 x 4 Grid)");
+					System.out.println("{2} Easy (5 x 5 Grid)");
+					System.out.println("{3} Medium (6 x 6 Grid)");
+					System.out.println("{4} Hard (7 x 7 Grid)");
+					System.out.println("{5} Epic (8 x 8 Grid)");
+					System.out.println("{6} Legendary (10 x 10 Grid)");
+					
+					int mapChoice = userInput.nextInt();
+					
+					switch (mapChoice)
+					{
+						case 1:
+								{
+									choosingMap = false;
+									arena = new Character[4][4];
+									break;
+								}
+						case 2:
+								{
+									choosingMap = false;
+									arena = new Character[5][5];
+									break;
+								}
+						case 3:
+								{
+									choosingMap = false;
+									arena = new Character[6][6];
+									break;
+								}
+						case 4:
+								{
+									choosingMap = false;
+									arena = new Character[7][7];
+									break;
+								}
+						case 5:
+								{
+									choosingMap = false;
+									arena = new Character[8][8];
+									break;
+								}
+						case 6:
+								{
+									choosingMap = false;
+									arena = new Character[10][10];
+									break;
+								}
+						default:
+								{
+									System.out.println("Try again.");
+									break;
+								}
+					}
+				}
+
+		}
+	
+		public static void generateEnemies()
+		{
+			for (Character c: players)
+				{
+					String name;
+					String characterClass;
+				}
+		}
+	
+	
+	
 	}
