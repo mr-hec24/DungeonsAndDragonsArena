@@ -26,6 +26,19 @@ public class Main
 			titleScreen();
 			askForMapLevel();
 			generateEnemies();
+			showTheRules();
+			gamePlay();
+			printArena();
+		}
+		
+		public static void gamePlay()
+		{
+			arena[0][0] = players.get(0);
+		}
+		
+		public static void printArena()
+		{
+			//Work on printing the BOARD/ARENA
 		}
 		
 		public static void titleScreen()
@@ -419,13 +432,169 @@ public class Main
 	
 		public static void generateEnemies()
 		{
+			String[] name = {"Hector", "Jeffer", "Ethan", "Wilson", "Andrew Jackson", "Zeke", "Coe", "Kyle"};
+			
 			for (Character c: players)
 				{
-					String name;
-					String characterClass;
+					int randomName = (int)(Math.random()*8);
+					int randomClass = (int)(Math.random()*10)+1;
+					
+					switch (randomClass)
+					{
+						case 1:			//Barbarian
+								{
+									characterClass = "Barabrian";
+									abilityName = "Rage";
+									ability = "Deal an extra 1d4 damage on your next turn.";
+									weapon = new Weapon("Battleaxe", 10, 2, 1);
+									hp = 10;
+									armorClass = 12;
+									speed = 5;
+									break;
+								}
+						case 2:			//Cleric
+								{
+									characterClass = "Cleric";
+									abilityName = "Heal";
+									ability = "Heal 1d6 damage to all adjacent allies.";
+									weapon = new Weapon("Mace", 6, 2, 1);										
+									hp = 8;
+									armorClass = 14;
+									speed = 3;
+									break;
+								}
+						case 3:			//Druid
+								{
+									characterClass = "Druid";
+									abilityName = "Vines";
+									ability = "A Enemy of your choice is immobile for one turn.";
+									weapon = new Weapon("Mace", 6, 2, 1);
+									hp = 8;
+									armorClass = 13;
+									speed = 3;
+									break;
+								}
+						case 4:			//Rogue
+								{
+									characterClass = "Rogue";
+									abilityName = "Sneak";
+									ability = "You can move 2 squares after you attack.";
+									weapon = new Weapon("Dagger", 4, 5, 1);
+									hp = 10;
+									armorClass = 10;
+									speed = 5;
+									break;
+								}
+						case 5:			//Wizard
+								{
+									characterClass = "Wizard";
+									abilityName = "Casting";
+									ability = "You cast a random speel at an Enemy, dealing 1d6 damage.";
+									weapon = new Weapon("Shortword", 5, 1, 1);
+									hp = 5;
+									armorClass = 14;
+									speed = 2;
+									break;
+								}
+						case 6:			//Warlock
+								{
+									characterClass = "Warlock";
+									abilityName = "Summon Dead";
+									ability = "Summons a 2 HP, 5 AC Zombie in an adjacent square.";
+									weapon = new Weapon("Crossbow", 6, 2, 2);
+									hp = 6;
+									armorClass = 12;
+									speed = 2;
+									break;
+								}
+						case 7:			//Ranger
+								{
+									characterClass = "Ranger";
+									abilityName = "Evade";
+									ability = "75% chance of evading an incoming attack of an Enemy.";
+									weapon = new Weapon("Bow", 4, 5, 2);
+									hp = 9;
+									armorClass = 10;
+									speed = 2;
+									break;
+								}
+						case 8:			//Bard
+								{
+									characterClass = "Bard";
+									abilityName = "Perform";
+									ability = "One of your allies advantage on their attack.";
+									weapon = new Weapon("Longsword", 10, 2, 1);
+									hp = 7;
+									armorClass = 11;
+									speed = 4;
+									break;
+								}
+						case 9:			//Monk
+								{
+									characterClass = "Monk";
+									abilityName = "Martial Arts";
+									ability = "Allows you to attack again with weapon.";
+									weapon = new Weapon("Javelin", 8, 2, 2);
+									hp = 6;
+									armorClass = 10;
+									speed = 2;
+									break;
+								}
+						case 10:		//Paladin
+								{
+									characterClass = "Paladin";
+									abilityName = "Smite";
+									ability = "Deal 1d8 damage to one of your Enemies";
+									weapon = new Weapon("Greatword", 6, 2, 1);
+									hp = 8;
+									armorClass = 14;
+									speed = 3;
+									break;
+								}
+					}
+					
+					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed));
 				}
 		}
 	
-	
+		public static void showTheRules()
+		{
+			System.out.println("In D&D Arena, you are in an arena with an Enemy. The objective is to be the last person standing.");
+			System.out.println("We start off by deteriming who goes first by rolling a 20 sided die.");
+			System.out.println("The person with the highest roll chooses whether to go first or second.");
+			System.out.println(" ");
+			System.out.println("On your turn, you can do these in this order:");
+			System.out.println("Move");
+			System.out.println("Use Ability");
+			System.out.println("Attack");
+			System.out.println(" ");
+			System.out.println("You can only move the number of squares equal to your Speed.");
+			System.out.println("Once you attack, you aren't able to move again (unless an ability says otherwise).");
+			System.out.println(" ");
+			System.out.println("You gain different abilities depending on your Class");
+			System.out.println("Different abilities give you different tactics to use.");
+			System.out.println("You aren't forced to use your ability on your turn though.");
+			System.out.println(" ");
+			System.out.println("You can only attack Enemies who are in range of your weapon.");
+			System.out.println("Your weapon depends on the Class you chose.");
+			System.out.println(" ");
+			System.out.println("After your turn, it's the enemy's turn, so be wise on what you want to do.");
+			System.out.println("The game will be starting shortly");
+			
+			System.out.println(" ");
+			System.out.print("Creating Dungeon");
+//			for (int i = 0; i < 10; i++)
+//				{
+//					try
+//						{
+//							Thread.sleep(1000);
+//							System.out.print(".");
+//						} catch (InterruptedException e)
+//						{
+//							
+//							e.printStackTrace();
+//						}
+//				}
+		}
 	
 	}
