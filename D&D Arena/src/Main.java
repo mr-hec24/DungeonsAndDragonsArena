@@ -7,6 +7,7 @@ public class Main
 		static Scanner userInputString;
 		static String enter;
 		static String userChoice;
+		static boolean hasCharacterInSquare;
 		
 		static String name;
 		static String characterClass;
@@ -36,23 +37,40 @@ public class Main
 			arena[0][0] = players.get(0);
 		}
 		
+		public static boolean determineIfSquareHasCharacter(int row, int col)
+		{
+			if (arena[row][col].equals(null))
+				{
+					hasCharacterInSquare = true;
+					return true;
+				}
+			else
+				{
+					hasCharacterInSquare = false;
+					return false;
+				}
+		}
+		
 		public static void printArena()
 		{
+			
+			
 			for (int row = 0; row < arena.length; row++)
 				{
 					for (int col = 0; col < arena[row].length; col++)
 						{
-							if (arena[row][col].equals(null))
+							
+							if (determineIfSquareHasCharacter(row, col) == false)
 								{
-									System.out.print("______");
-									System.out.print("|     ");
-									System.out.print("|_____");
+									System.out.println("______");
+									System.out.println("|     ");
+									System.out.println("|_____");
 								}
 							else
 								{
-									System.out.print("______");
-									System.out.print("|  " + arena[row][col].getName().substring(0,1) + "  ");
-									System.out.print("|_____");
+									System.out.println("______");
+									System.out.println("|  " + arena[row][col].getName().substring(0,1) + "  ");
+									System.out.println("|_____");
 								}
 						}
 				}
