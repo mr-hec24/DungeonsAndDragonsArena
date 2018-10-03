@@ -38,7 +38,83 @@ public class Main
 		
 		public static void printArena()
 		{
-			//Work on printing the BOARD/ARENA
+			for (int row = 0; row < arena.length; row++)
+				{
+					for (int col = 0; col < arena[row].length; col++)
+						{
+							if (arena[row][col].equals(null))
+								{
+									System.out.print("______");
+									System.out.print("|     ");
+									System.out.print("|_____");
+								}
+							else
+								{
+									System.out.print("______");
+									System.out.print("|  " + arena[row][col].getName().substring(0,1) + "  ");
+									System.out.print("|_____");
+								}
+						}
+				}
+			
+			
+			
+//			switch (arena.length)
+//			{
+//				case 4:
+//						{
+//							System.out.println("_________________________");
+//							System.out.println("|     |     |     |     |");
+//							System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |  " + arena[0][1].getName().substring(0,1) + "  |  " + arena[0][2].getName().substring(0,1) + "  |  " + arena[0][3].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |");
+//							System.out.println("|  " + arena[1][0].getName().substring(0,1) + "  |  " + arena[1][1].getName().substring(0,1) + "  |  " + arena[1][2].getName().substring(0,1) + "  |  " + arena[1][3].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |");
+//							System.out.println("|  " + arena[2][0].getName().substring(0,1) + "  |  " + arena[2][1].getName().substring(0,1) + "  |  " + arena[2][2].getName().substring(0,1) + "  |  " + arena[2][3].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |");
+//							System.out.println("|  " + arena[3][0].getName().substring(0,1) + "  |  " + arena[3][1].getName().substring(0,1) + "  |  " + arena[3][2].getName().substring(0,1) + "  |  " + arena[3][3].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|");
+//							break;
+//						}
+//				case 5:
+//						{
+//							System.out.println("_______________________________");
+//							System.out.println("|     |     |     |     |     |");
+//							System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |  " + arena[0][1].getName().substring(0,1) + "  |  " + arena[0][2].getName().substring(0,1) + "  |  " + arena[0][3].getName().substring(0,1) + "  |  " + arena[0][4].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |     |");
+//							System.out.println("|  " + arena[1][0].getName().substring(0,1) + "  |  " + arena[1][1].getName().substring(0,1) + "  |  " + arena[1][2].getName().substring(0,1) + "  |  " + arena[1][3].getName().substring(0,1) + "  |  " + arena[1][4].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |     |");
+//							System.out.println("|  " + arena[2][0].getName().substring(0,1) + "  |  " + arena[2][1].getName().substring(0,1) + "  |  " + arena[2][2].getName().substring(0,1) + "  |  " + arena[2][3].getName().substring(0,1) + "  |  " + arena[2][4].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |     |");
+//							System.out.println("|  " + arena[3][0].getName().substring(0,1) + "  |  " + arena[3][1].getName().substring(0,1) + "  |  " + arena[3][2].getName().substring(0,1) + "  |  " + arena[3][3].getName().substring(0,1) + "  |  " + arena[3][4].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|_____|");
+//							System.out.println("|     |     |     |     |     |");
+//							System.out.println("|  " + arena[4][0].getName().substring(0,1) + "  |  " + arena[4][1].getName().substring(0,1) + "  |  " + arena[4][2].getName().substring(0,1) + "  |  " + arena[4][3].getName().substring(0,1) + "  |  " + arena[4][4].getName().substring(0,1) + "  |");
+//							System.out.println("|_____|_____|_____|_____|_____|");
+//							break;
+//						}
+//				case 6:
+//						{
+//							break;
+//						}
+//				case 7:
+//						{
+//							break;
+//						}
+//				case 8:
+//						{
+//							break;
+//						}
+//				case 10:
+//						{
+//							break;
+//						}
+//			}
 		}
 		
 		public static void titleScreen()
@@ -595,6 +671,7 @@ public class Main
 //							e.printStackTrace();
 //						}
 //				}
+			System.out.println(" ");
 		}
 	
 	}
