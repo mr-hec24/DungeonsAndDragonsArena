@@ -9,8 +9,10 @@ public class Character
 		private int hitPoints;
 		private int armorClass;
 		private int speed;
+		private int row;
+		private int collumn;
 		
-		public Character(String n, String c, String can, String ca, Weapon w, int h, int a, int sp)
+		public Character(String n, String c, String can, String ca, Weapon w, int h, int a, int sp, int r, int col)
 		{
 			name = n;
 			characterClass = c;
@@ -20,6 +22,9 @@ public class Character
 			hitPoints = h;
 			armorClass = a;
 			speed = sp;
+			
+			row = r;
+			collumn = col;
 		}
 		
 		public String rollToHit(Character c)
@@ -237,6 +242,26 @@ public class Character
 		public void setSpeed(int speed)
 			{
 				this.speed = speed;
+			}
+
+		public int getRow()
+			{
+				return row;
+			}
+
+		public void setRow(int row)
+			{
+				this.row = row;
+			}
+
+		public int getCollumn()
+			{
+				return collumn;
+			}
+
+		public void setCollumn(int collumn)
+			{
+				this.collumn = collumn;
 			}
 		
 	}

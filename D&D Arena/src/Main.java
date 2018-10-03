@@ -8,6 +8,8 @@ public class Main
 		static String enter;
 		static String userChoice;
 		static boolean hasCharacterInSquare;
+		static boolean playerGoesFirst;
+		static boolean playing;
 		
 		static String name;
 		static String characterClass;
@@ -29,51 +31,201 @@ public class Main
 			generateEnemies();
 			showTheRules();
 			gamePlay();
-			printArena();
+//			printArena();
 		}
 		
 		public static void gamePlay()
 		{
-			arena[0][0] = players.get(0);
+			System.out.println("Game Play");
+			playing = true;
+			while (playing)
+				{
+					if (playerGoesFirst == true)
+						{
+							playersTurn();
+							checkDeath();
+							
+							enemysTurn();
+							checkDeath();
+						}
+					else
+						{
+							enemysTurn();
+							checkDeath();
+							
+							playersTurn();
+							checkDeath();
+						}
+					
+				}
 		}
 		
-		public static boolean determineIfSquareHasCharacter(int row, int col)
+		public static void checkDeath()
 		{
-			if (arena[row][col].equals(null))
+			if (players.get(0).getHitPoints() <= 0)
 				{
-					hasCharacterInSquare = true;
-					return true;
+					System.out.println("YOU HAVE DIED! GAME OVER!");
+					playing = false;
+				}
+			else if (enemies.get(0).getHitPoints() <= 0)
+				{
+					System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+					playing = false;
 				}
 			else
 				{
-					hasCharacterInSquare = false;
-					return false;
+					
 				}
 		}
 		
-		public static void printArena()
+		public static void determineWhoGoesFirstOrSecond()
 		{
+			arena[0][0] = players.get(0);
+			arena[arena.length-1][arena[arena.length-1].length-1] = enemies.get(0);
+			printTestingArena();
+			
+			System.out.println("Press enter to roll to see who goes first or second.");
+			String enter = userInput.nextLine();
+			
+			int playerRoll = (int)(Math.random()*20)+1;
+			int enemyRoll = (int)(Math.random()*20)+1;
 			
 			
-			for (int row = 0; row < arena.length; row++)
+			
+			if (playerRoll >= enemyRoll)
 				{
-					for (int col = 0; col < arena[row].length; col++)
+					System.out.println("You rolled a " + playerRoll + " which beats the enemy's " + enemyRoll);
+					System.out.println("Would you like to go first, or second?");
+					System.out.println("{1} First");
+					System.out.println("{2} Second");
+					int userChoice = userInput.nextInt();
+					if (userChoice == 1)
 						{
-							
-							if (determineIfSquareHasCharacter(row, col) == false)
-								{
-									System.out.println("______");
-									System.out.println("|     ");
-									System.out.println("|_____");
-								}
-							else
-								{
-									System.out.println("______");
-									System.out.println("|  " + arena[row][col].getName().substring(0,1) + "  ");
-									System.out.println("|_____");
-								}
+							System.out.println("You have chosen to go first.");
+							playerGoesFirst = true;
+						}
+					else
+						{
+							System.out.println("You have chosen to go second, please wait patiently.");
+							playerGoesFirst = false;
+						}
+					
+				}
+			else
+				{
+					System.out.println("You rolled a " + playerRoll + " which doesn't beat the enemy's " + enemyRoll);
+					int randomChoice = (int)(Math.random()*2);
+					if (randomChoice == 0)
+						{
+							System.out.println("The enemy has chosen to go second. So you are up.");
+							playerGoesFirst = true;
+						}
+					else
+						{
+							System.out.println("The enemy has chosen to go first. So please wait patiently.");
+							playerGoesFirst = false;
 						}
 				}
+			
+			gamePlay();
+		}
+		
+		public static void playersTurn()
+		{
+			System.out.println("Your base speed is " + players.get(0).getSpeed() + ".");
+			int squaresLeft = players.get(0).getSpeed();
+			System.out.println("Where would you like to move?");
+			
+			if (players.get(0).getRow() != 0)
+				{
+					System.out.println("{1} Up");
+				}
+			if (players.get(0).getRow() != arena.length-1)
+				{
+					System.out.println("{2} Down");
+				}
+			if (players.get(0).getCollumn() != 0)
+				{
+					System.out.println("{3} Left");
+				}
+			if (players.get(0).getCollumn() != 0)
+				{
+					System.out.println("{4} Right");
+				}
+			
+			
+			System.out.println("{1} Up");
+			System.out.println("{2} Down");
+			System.out.println("{3} Left");
+			System.out.println("{4} Right");
+			
+			
+			int userChoice = userInput.nextInt();
+			
+			
+			
+		}
+		
+		public static void enemysTurn()
+		{
+			System.out.println("Enemy's Turn");
+		}
+		
+		public static void printTestingArena()
+		{
+			System.out.println("_________________________");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |     |     |     |");
+			System.out.println("|_____|_____|_____|_____|");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|_____|_____|_____|_____|");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|_____|_____|_____|_____|");
+			System.out.println("|     |     |     |     |");
+			System.out.println("|     |     |     |  " + arena[3][3].getName().substring(0,1) + "  |");
+			System.out.println("|_____|_____|_____|_____|");
+		}
+		
+//		public static boolean determineIfSquareHasCharacter(int row, int col)
+//		{
+//			if (arena[row][col].equals(null))
+//				{
+//					hasCharacterInSquare = true;
+//					return true;
+//				}
+//			else
+//				{
+//					hasCharacterInSquare = false;
+//					return false;
+//				}
+//		}
+//		
+//		
+//		public static void printArena()
+//		{
+//			
+//			
+//			for (int row = 0; row < arena.length; row++)
+//				{
+//					for (int col = 0; col < arena[row].length; col++)
+//						{
+//							
+//							if (determineIfSquareHasCharacter(row, col) == false)
+//								{
+//									System.out.println("______");
+//									System.out.println("|     ");
+//									System.out.println("|_____");
+//								}
+//							else
+//								{
+//									System.out.println("______");
+//									System.out.println("|  " + arena[row][col].getName().substring(0,1) + "  ");
+//									System.out.println("|_____");
+//								}
+//						}
+//				}
 			
 			
 			
@@ -133,7 +285,7 @@ public class Main
 //							break;
 //						}
 //			}
-		}
+//		}
 		
 		public static void titleScreen()
 		{
@@ -455,7 +607,7 @@ public class Main
 						}
 				}
 			
-			players.add(new Character(name, characterClass, abilityName, ability, weapon, hp, armorClass, speed));
+			players.add(new Character(name, characterClass, abilityName, ability, weapon, hp, armorClass, speed, 0, 0));
 			
 			System.out.println(name + " has been added to the campaign!");
 		}
@@ -647,7 +799,7 @@ public class Main
 								}
 					}
 					
-					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed));
+					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, arena.length-1, arena[arena.length-1].length-1));
 				}
 		}
 	
