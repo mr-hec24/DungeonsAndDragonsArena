@@ -10,6 +10,8 @@ public class Main
 		static boolean hasCharacterInSquare;
 		static boolean playerGoesFirst;
 		static boolean playing;
+		static boolean enemyInRange;
+		static Character target;
 		
 		static String name;
 		static String characterClass;
@@ -38,8 +40,12 @@ public class Main
 		{
 			System.out.println("Game Play");
 			playing = true;
-			while (playing)
+			determineWhoGoesFirstOrSecond();
+			
+			while (playing == true)
 				{
+					System.out.println(" ");
+					System.out.println("Playing");
 					if (playerGoesFirst == true)
 						{
 							playersTurn();
@@ -82,15 +88,13 @@ public class Main
 		{
 			arena[0][0] = players.get(0);
 			arena[arena.length-1][arena[arena.length-1].length-1] = enemies.get(0);
-			printTestingArena();
 			
 			System.out.println("Press enter to roll to see who goes first or second.");
-			String enter = userInput.nextLine();
+			Scanner userInput2 = new Scanner(System.in);
+			String enter = userInput2.nextLine();
 			
 			int playerRoll = (int)(Math.random()*20)+1;
 			int enemyRoll = (int)(Math.random()*20)+1;
-			
-			printTestingArena();
 			
 			if (playerRoll >= enemyRoll)
 				{
@@ -126,53 +130,70 @@ public class Main
 							playerGoesFirst = false;
 						}
 				}
-			
-			gamePlay();
+		}
+		
+		public static void checkIfEnemyIsInRange()
+		{
+			if (players.get(0).getRow() == enemies.get(0).getRow()) // Checks to see if the Enemy is in the same Row
+				{
+					
+					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() - players.get(0).getWeapon().getRange())
+						{
+							target = enemies.get(0);
+							System.out.println("{5} Attack " + target.getName());
+							enemyInRange = true;
+						}
+					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())
+						{
+							target = enemies.get(0);
+							System.out.println("{5} Attack " + target.getName());
+							enemyInRange = true;
+						}
+				}
+			else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
+				{
+					if (players.get(0).getRow() == enemies.get(0).getRow() - players.get(0).getWeapon().getRange())
+						{
+							target = enemies.get(0);
+							System.out.println("{5} Attack " + target.getName());
+							enemyInRange = true;
+						}
+					if (players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())
+						{
+							target = enemies.get(0);
+							System.out.println("{5} Attack " + target.getName());
+							enemyInRange = true;
+						}
+				}
 		}
 		
 		public static void playersTurn()
 		{
+			System.out.println(" ");
 			System.out.println("Your base speed is " + players.get(0).getSpeed() + ".");
 			int squaresLeft = players.get(0).getSpeed();
 			System.out.println("Where would you like to move?");
-			Character target;
+			
+			
+//			printTestingArena();
 			
 			while (squaresLeft != 0)
 				{
+					enemyInRange = false;
+					
 					System.out.println("{1} Up");
 					System.out.println("{2} Down");
 					System.out.println("{3} Left");
 					System.out.println("{4} Right");
-					
-					if (players.get(0).getRow() == enemies.get(0).getRow() && players.get(0).getCollumn() == enemies.get(0).getCollumn() - players.get(0).getWeapon().getRange()) //Checks to see if enemy is in range of weapon
-						{
-							target = arena[players.get(0).getRow()] [players.get(0).getCollumn()+players.get(0).getWeapon().getRange()];//assigns "TARGET" to the enemy that is in range of weapon
-							System.out.println("{5} Attack " + target.getName());
-						}
-					else if (players.get(0).getRow() == enemies.get(0).getRow() && players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())//Checks to see if enemy is in range of weapon
-						{
-							target = arena[players.get(0).getRow()] [players.get(0).getCollumn()-players.get(0).getWeapon().getRange()];//assigns "TARGET" to the enemy that is in range of weapon
-							System.out.println("{5} Attack " + target.getName());
-						}
-					else if(players.get(0).getCollumn() == enemies.get(0).getCollumn() && players.get(0).getRow() == enemies.get(0).getRow() - players.get(0).getWeapon().getRange())//Checks to see if enemy is in range of weapon
-						{
-							target = arena[players.get(0).getRow()+players.get(0).getWeapon().getRange()] [players.get(0).getCollumn()];//assigns "TARGET" to the enemy that is in range of weapon
-							System.out.println("{5} Attack " + target.getName());
-						}
-					else if(players.get(0).getCollumn() == enemies.get(0).getCollumn() && players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())//Checks to see if enemy is in range of weapon
-						{
-							target = arena[players.get(0).getRow()-players.get(0).getWeapon().getRange()] [players.get(0).getCollumn()];//assigns "TARGET" to the enemy that is in range of weapon
-							System.out.println("{5} Attack " + target.getName());
-						}
-					
-					
+				
+					checkIfEnemyIsInRange();
 					
 					int userChoice = userInput.nextInt();
 					
 					if (userChoice == 1 && players.get(0).getRow() != 0)
 						{
 							System.out.println("How many spaces would you like to move up?");
-							System.out.println("Availble Movement: " + squaresLeft);
+							System.out.println("Available Movement: " + squaresLeft);
 							int squaresMove = userInput.nextInt();
 							squaresLeft -= squaresMove;
 							players.get(0).setRow(players.get(0).getRow()-squaresMove);
@@ -180,7 +201,7 @@ public class Main
 					else if (userChoice == 2 && players.get(0).getRow() != arena.length-1)
 						{
 							System.out.println("How many spaces would you like to move down?");
-							System.out.println("Availble Movement: " + squaresLeft);
+							System.out.println("Available Movement: " + squaresLeft);
 							int squaresMove = userInput.nextInt();
 							squaresLeft -= squaresMove;
 							players.get(0).setRow(players.get(0).getRow()+squaresMove);
@@ -188,7 +209,7 @@ public class Main
 					else if (userChoice == 3 && players.get(0).getCollumn() != 0)
 						{
 							System.out.println("How many spaces would you like to move left?");
-							System.out.println("Availble Movement: " + squaresLeft);
+							System.out.println("Available Movement: " + squaresLeft);
 							int squaresMove = userInput.nextInt();
 							squaresLeft -= squaresMove;
 							players.get(0).setCollumn(players.get(0).getCollumn()-squaresMove);
@@ -196,7 +217,7 @@ public class Main
 					else if (userChoice == 4 && players.get(0).getCollumn() != arena[0].length-1)
 						{
 							System.out.println("How many spaces would you like to move up?");
-							System.out.println("Availble Movement: " + squaresLeft);
+							System.out.println("Available Movement: " + squaresLeft);
 							int squaresMove = userInput.nextInt();
 							squaresLeft -= squaresMove;
 							players.get(0).setCollumn(players.get(0).getCollumn()+squaresMove);
@@ -217,6 +238,18 @@ public class Main
 						}
 					else
 						{
+							if (enemyInRange == true)
+								{
+									System.out.println("{1} Attack");
+									System.out.println("{2} End Turn");
+									userChoice = userInput.nextInt();
+									
+									if (userChoice == 1)
+										{
+											System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
+										}
+								}
+							
 							System.out.println("You can't move anymore. You ran out of speed.");
 						}
 				}
@@ -231,7 +264,7 @@ public class Main
 		{
 			System.out.println("_________________________");
 			System.out.println("|     |     |     |     |");
-			System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |     |     |     |");
+			System.out.println("| " + arena[0][0].getName().substring(0,3) + " |     |     |     |");
 			System.out.println("|_____|_____|_____|_____|");
 			System.out.println("|     |     |     |     |");
 			System.out.println("|     |     |     |     |");
@@ -240,7 +273,7 @@ public class Main
 			System.out.println("|     |     |     |     |");
 			System.out.println("|_____|_____|_____|_____|");
 			System.out.println("|     |     |     |     |");
-			System.out.println("|     |     |     |  " + arena[3][3].getName().substring(0,1) + "  |");
+			System.out.println("|     |     |     | " + enemies.get(0).getName().substring(0,3) + " |");
 			System.out.println("|_____|_____|_____|_____|");
 		}
 		
@@ -855,7 +888,7 @@ public class Main
 								}
 					}
 					
-					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, /*arena.length-1*/0, 1/*arena[arena.length-1].length-1*/));
+					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, arena.length-1, arena[arena.length-1].length-1));
 				}
 		}
 	
