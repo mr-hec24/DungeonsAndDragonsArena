@@ -27,18 +27,7 @@ public class Character
 			collumn = col;
 		}
 		
-		public String rollToHit(Character c)
-		{
-			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
-			if (roll > c.getArmorClass())
-				{	
-					return "You hit " + c.getName() + " with your " + this.getWeapon().getName() + ".";
-				}
-			else
-				{
-					return "You came up to attack with your " + this.getWeapon().getName() + " but you missed";
-				}
-		}
+
 		
 		public int rollForDamage()
 		{
@@ -51,7 +40,21 @@ public class Character
 			int damage = rollForDamage();
 			c.takeDamage(damage);
 			
-			return this.getName() + " dealt " + damage + " to " + c.getName();
+			return this.getName() + " dealt " + damage + " damage to " + c.getName();
+		}
+		
+		public String rollToHit(Character c)
+		{
+			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
+			if (roll > c.getArmorClass())
+				{	
+					
+					return "You hit " + c.getName() + " with your " + this.getWeapon().getName() + ". " + dealDamage(c);
+				}
+			else
+				{
+					return "You came up to attack " + c.getName() +" with your " + this.getWeapon().getName() + " but you missed";
+				}
 		}
 		
 		public void takeDamage(int damage)
