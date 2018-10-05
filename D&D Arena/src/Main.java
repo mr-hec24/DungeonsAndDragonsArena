@@ -38,14 +38,13 @@ public class Main
 		
 		public static void gamePlay()
 		{
-			System.out.println("Game Play");
 			playing = true;
 			determineWhoGoesFirstOrSecond();
+			printArena();
 			
 			while (playing == true)
 				{
 					System.out.println(" ");
-					System.out.println("Playing");
 					if (playerGoesFirst == true)
 						{
 							playersTurn();
@@ -216,7 +215,7 @@ public class Main
 						}
 					else if (userChoice == 4 && players.get(0).getCollumn() != arena[0].length-1)
 						{
-							System.out.println("How many spaces would you like to move up?");
+							System.out.println("How many spaces would you like to move to the right?");
 							System.out.println("Available Movement: " + squaresLeft);
 							int squaresMove = userInput.nextInt();
 							squaresLeft -= squaresMove;
@@ -238,13 +237,14 @@ public class Main
 						}
 					else
 						{
+							checkIfEnemyIsInRange();
+							
 							if (enemyInRange == true)
 								{
-									System.out.println("{1} Attack");
-									System.out.println("{2} End Turn");
+									System.out.println("{6} End Turn");
 									userChoice = userInput.nextInt();
 									
-									if (userChoice == 1)
+									if (userChoice == 5)
 										{
 											System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
 										}
@@ -257,10 +257,41 @@ public class Main
 		
 		public static void enemysTurn()
 		{
-			System.out.println("Enemy's Turn");
+			int squaresLeft = 0;
+			int randomDirection = (int)(Math.random()*4);
+			
+			while (squaresLeft > 0)
+				{
+					int randomMovement = (int)(Math.random()*enemies.get(0).getSpeed()) + 1;
+					
+					System.out.println("Enemy Is Moving");
+					if (randomDirection == 0 && enemies.get(0).getRow() != 0)
+						{
+							squaresLeft -= randomMovement;
+							enemies.get(0).setRow(enemies.get(0).getRow()-randomMovement);
+						}
+					else if (randomDirection == 1 && enemies.get(0).getRow() != arena.length-1)
+						{
+							squaresLeft -= randomMovement;
+							enemies.get(0).setRow(enemies.get(0).getRow()+randomMovement);
+						}
+					else if (randomDirection == 2 && enemies.get(0).getCollumn() != 0)
+						{
+							squaresLeft -= randomMovement;
+							enemies.get(0).setCollumn(enemies.get(0).getCollumn()-randomMovement);
+						}
+					else if (randomDirection == 3 && enemies.get(0).getCollumn() != arena[0].length-1)
+						{
+							squaresLeft -= randomMovement;
+							enemies.get(0).setCollumn(enemies.get(0).getCollumn()+randomMovement);
+						}
+				}
+			
+			
+			
 		}
 		
-		public static void printTestingArena()
+		public static void printArena()
 		{
 			System.out.println("_________________________");
 			System.out.println("|     |     |     |     |");
@@ -279,7 +310,7 @@ public class Main
 		
 //		public static boolean determineIfSquareHasCharacter(int row, int col)
 //		{
-//			if (arena[row][col].equals(null))
+//			if (arena[row][col].hashCode() == 0)
 //				{
 //					hasCharacterInSquare = true;
 //					return true;
@@ -315,8 +346,8 @@ public class Main
 //								}
 //						}
 //				}
-			
-			
+//			
+//		}	
 			
 //			switch (arena.length)
 //			{
@@ -918,18 +949,18 @@ public class Main
 			
 			System.out.println(" ");
 			System.out.print("Creating Dungeon");
-//			for (int i = 0; i < 10; i++)
-//				{
-//					try
-//						{
-//							Thread.sleep(1000);
-//							System.out.print(".");
-//						} catch (InterruptedException e)
-//						{
-//							
-//							e.printStackTrace();
-//						}
-//				}
+			for (int i = 0; i < 10; i++)
+				{
+					try
+						{
+							Thread.sleep(1000);
+							System.out.print(".");
+						} catch (InterruptedException e)
+						{
+							
+							e.printStackTrace();
+						}
+				}
 			System.out.println(" ");
 		}
 	
