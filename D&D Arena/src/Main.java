@@ -138,14 +138,10 @@ public class Main
 					
 					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() - players.get(0).getWeapon().getRange())
 						{
-							target = enemies.get(0);
-							System.out.println("{5} Attack " + target.getName());
 							enemyInRange = true;
 						}
 					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())
 						{
-							target = enemies.get(0);
-							System.out.println("{5} Attack " + target.getName());
 							enemyInRange = true;
 						}
 				}
@@ -153,14 +149,10 @@ public class Main
 				{
 					if (players.get(0).getRow() == enemies.get(0).getRow() - players.get(0).getWeapon().getRange())
 						{
-							target = enemies.get(0);
-							System.out.println("{5} Attack " + target.getName());
 							enemyInRange = true;
 						}
 					if (players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())
 						{
-							target = enemies.get(0);
-							System.out.println("{5} Attack " + target.getName());
 							enemyInRange = true;
 						}
 				}
@@ -173,10 +165,9 @@ public class Main
 			int squaresLeft = players.get(0).getSpeed();
 			System.out.println("Where would you like to move?");
 			
-			
 //			printTestingArena();
 			
-			while (squaresLeft != 0)
+			while (squaresLeft > 0)
 				{
 					enemyInRange = false;
 					
@@ -186,6 +177,11 @@ public class Main
 					System.out.println("{4} Right");
 				
 					checkIfEnemyIsInRange();
+					
+					if (enemyInRange == true)
+						{
+							System.out.println("{5} Attack " + enemies.get(0).getName());
+						}
 					
 					int userChoice = userInput.nextInt();
 					
@@ -241,6 +237,7 @@ public class Main
 							
 							if (enemyInRange == true)
 								{
+									System.out.println("{5} Attack " + enemies.get(0).getName());
 									System.out.println("{6} End Turn");
 									userChoice = userInput.nextInt();
 									
@@ -248,6 +245,7 @@ public class Main
 										{
 											System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
 										}
+									break;
 								}
 							
 							System.out.println("You can't move anymore. You ran out of speed.");
@@ -257,14 +255,21 @@ public class Main
 		
 		public static void enemysTurn()
 		{
-			int squaresLeft = 0;
-			int randomDirection = (int)(Math.random()*4);
+			int squaresLeft = enemies.get(0).getSpeed();
 			
 			while (squaresLeft > 0)
 				{
-					int randomMovement = (int)(Math.random()*enemies.get(0).getSpeed()) + 1;
+					int randomDirection = (int)(Math.random()*4);
+					int randomMovement = (int)(Math.random()*squaresLeft) + 1;
 					
-					System.out.println("Enemy Is Moving");
+					checkIfEnemyIsInRange();
+					
+					if (enemyInRange == true)
+						{
+							System.out.println(enemies.get(0).rollToHit(players.get(0)));
+							break;
+						}
+					
 					if (randomDirection == 0 && enemies.get(0).getRow() != 0)
 						{
 							squaresLeft -= randomMovement;
@@ -285,9 +290,18 @@ public class Main
 							squaresLeft -= randomMovement;
 							enemies.get(0).setCollumn(enemies.get(0).getCollumn()+randomMovement);
 						}
+					
+					checkIfEnemyIsInRange();
+					
+					if (enemyInRange == true)
+						{
+							break;
+						}
+					
+					System.out.println("Enemy Is Moving To " + enemies.get(0).getRow() + ", " + enemies.get(0).getCollumn());
+					System.out.println(squaresLeft);
+					System.out.println(" ");
 				}
-			
-			
 			
 		}
 		
