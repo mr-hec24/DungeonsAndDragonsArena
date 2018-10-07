@@ -22,7 +22,6 @@ public class Character
 			hitPoints = h;
 			armorClass = a;
 			speed = sp;
-			
 			row = r;
 			collumn = col;
 		}
@@ -40,7 +39,7 @@ public class Character
 			int damage = rollForDamage();
 			c.takeDamage(damage);
 			
-			return this.getName() + " dealt " + damage + " damage to " + c.getName();
+			return this.getName() + " dealt " + damage + " damage to " + c.getName() + ".";
 		}
 		
 		public String rollToHit(Character c)
@@ -49,11 +48,11 @@ public class Character
 			if (roll > c.getArmorClass())
 				{	
 					
-					return "You hit " + c.getName() + " with your " + this.getWeapon().getName() + ". " + dealDamage(c);
+					return this.getName() + " hit " + c.getName() + " with your " + this.getName() + "'s " + this.getWeapon().getName() + ". " + dealDamage(c);
 				}
 			else
 				{
-					return "You came up to attack " + c.getName() +" with your " + this.getWeapon().getName() + " but you missed";
+					return this.getName() + " came up to attack " + c.getName() +" with " + this.getName() + "'s " + this.getWeapon().getName() + " but you missed ";
 				}
 		}
 		
