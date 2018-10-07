@@ -11,7 +11,13 @@ public class Main
 		static boolean playerGoesFirst;
 		static boolean playing;
 		static boolean enemyInRange;
+		static boolean playerInRange;
+		static boolean usedAbility;
+		static boolean evading;
+		static boolean advantage;
+		static boolean attackTwice;
 		static Character target;
+		static int squaresLeft;
 		
 		static String name;
 		static String characterClass;
@@ -42,47 +48,68 @@ public class Main
 			determineWhoGoesFirstOrSecond();
 			printArena();
 			
-			while (playing == true)
+			if (playerGoesFirst == true)
 				{
 					System.out.println(" ");
-					if (playerGoesFirst == true)
+					while (playing)
 						{
 							playersTurn();
-							checkDeath();
+							if (players.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DIED! GAME OVER!");
+									break;
+								}
+							else if (enemies.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+									break;
+								}
 							
 							enemysTurn();
-							checkDeath();
+							if (players.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DIED! GAME OVER!");
+									break;
+								}
+							else if (enemies.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+									break;
+								}
 						}
-					else
-						{
-							enemysTurn();
-							checkDeath();
-							
-							playersTurn();
-							checkDeath();
-						}
-					
-				}
-		}
-		
-		public static void checkDeath()
-		{
-			if (players.get(0).getHitPoints() <= 0)
-				{
-					System.out.println("YOU HAVE DIED! GAME OVER!");
-					playing = false;
-				}
-			else if (enemies.get(0).getHitPoints() <= 0)
-				{
-					System.out.println("YOU HAVE DEFEATED THE ENEMY!");
-					playing = false;
 				}
 			else
 				{
-					
+					System.out.println(" ");
+					while (playing == true)
+						{
+							enemysTurn();
+							if (players.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DIED! GAME OVER!");
+									break;
+								}
+							else if (enemies.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+									break;
+								}
+							
+							playersTurn();
+							if (players.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DIED! GAME OVER!");
+									break;
+								}
+							else if (enemies.get(0).getHitPoints() <= 0)
+								{
+									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+									break;
+								}
+						}
 				}
 		}
-		
+
 		public static void determineWhoGoesFirstOrSecond()
 		{
 			arena[0][0] = players.get(0);
@@ -131,6 +158,45 @@ public class Main
 				}
 		}
 		
+		public static void checkIfPlayerIsInRange()
+		{
+			if (players.get(0).getRow() == enemies.get(0).getRow()) // Checks to see if the Enemy is in the same Row
+				{
+					
+					if (enemies.get(0).getCollumn() == players.get(0).getCollumn() - enemies.get(0).getWeapon().getRange())
+						{
+							playerInRange = true;
+						}
+					else if (enemies.get(0).getCollumn() == players.get(0).getCollumn() + enemies.get(0).getWeapon().getRange())
+						{
+							playerInRange = true;
+						}
+					else
+						{
+							playerInRange = false;
+						}
+				}
+			else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
+				{
+					if (enemies.get(0).getRow() == players.get(0).getRow() - enemies.get(0).getWeapon().getRange())
+						{
+							playerInRange = true;
+						}
+					else if (enemies.get(0).getRow() == players.get(0).getRow() + enemies.get(0).getWeapon().getRange())
+						{
+							playerInRange = true;
+						}
+					else
+						{
+							playerInRange = false;
+						}
+				}
+			else
+				{
+					playerInRange = false;
+				}
+		}
+		
 		public static void checkIfEnemyIsInRange()
 		{
 			if (players.get(0).getRow() == enemies.get(0).getRow()) // Checks to see if the Enemy is in the same Row
@@ -140,9 +206,13 @@ public class Main
 						{
 							enemyInRange = true;
 						}
-					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())
+					else if (players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())
 						{
 							enemyInRange = true;
+						}
+					else
+						{
+							enemyInRange = false;
 						}
 				}
 			else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
@@ -151,10 +221,18 @@ public class Main
 						{
 							enemyInRange = true;
 						}
-					if (players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())
+					else if (players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())
 						{
 							enemyInRange = true;
 						}
+					else
+						{
+							enemyInRange = false;
+						}
+				}
+			else
+				{
+					enemyInRange = false;
 				}
 		}
 		
@@ -162,7 +240,9 @@ public class Main
 		{
 			System.out.println(" ");
 			System.out.println("Your base speed is " + players.get(0).getSpeed() + ".");
-			int squaresLeft = players.get(0).getSpeed();
+			squaresLeft = players.get(0).getSpeed();
+			usedAbility = false;
+			attackTwice = false;
 			System.out.println("Where would you like to move?");
 			
 //			printTestingArena();
@@ -181,6 +261,14 @@ public class Main
 					if (enemyInRange == true)
 						{
 							System.out.println("{5} Attack " + enemies.get(0).getName());
+							if (usedAbility = true)
+								{
+									
+								}
+							else if (players.get(0).getClassAbilityName().equals("Rage") || players.get(0).getClassAbilityName().equals("Casting") || players.get(0).getClassAbilityName().equals("Perform") ||players.get(0).getClassAbilityName().equals("Martial Arts") || players.get(0).getClassAbilityName().equals("Smite"))
+								{
+									System.out.println("{6} Use " + players.get(0).getClassAbilityName());
+								}
 						}
 					
 					int userChoice = userInput.nextInt();
@@ -217,10 +305,45 @@ public class Main
 							squaresLeft -= squaresMove;
 							players.get(0).setCollumn(players.get(0).getCollumn()+squaresMove);
 						}
+					else if (usedAbility == true)
+						{
+							break;
+						}
 					else if (userChoice == 5)
 						{
-							System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
+							int evadeChance;
+							
+							if (evading = true)
+								{
+									evadeChance = (int)(Math.random()*4);
+									
+									System.out.println(evadeChance == 4? players.get(0).rollToHit(enemies.get(0)):enemies.get(0) + " has evaded your attack.");
+								}
+							else if (advantage = true)
+								{
+									String fails = players.get(0).getName() + " came up to attack " + enemies.get(0).getName() +" with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + " but " + players.get(0).getName() + " missed.";
+									String succeeds = players.get(0).getName() + " hit " + enemies.get(0).getName() + " with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + ". " + players.get(0).dealDamage(enemies.get(0));
+									advantage = false;
+									
+									if (players.get(0).hits(enemies.get(0)) == false)
+										{
+											System.out.println(players.get(0).hits(enemies.get(0))? succeeds : fails);
+										}
+									else
+										{
+											System.out.println(succeeds);
+										}
+								}
+							else
+								{
+									System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
+								}
 							break;
+						}
+					else if (userChoice == 6)
+						{
+							useAbility();
+							usedAbility = true;
 						}
 					else
 						{
@@ -238,12 +361,52 @@ public class Main
 							if (enemyInRange == true)
 								{
 									System.out.println("{5} Attack " + enemies.get(0).getName());
-									System.out.println("{6} End Turn");
+									System.out.println("{6} Use " + players.get(0).getClassAbilityName());
+									System.out.println("{7} End Turn");
 									userChoice = userInput.nextInt();
 									
 									if (userChoice == 5)
 										{
-											System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
+											int evadeChance;
+											
+											if (evading = true)
+												{
+													evadeChance = (int)(Math.random()*4);
+													
+													System.out.println(evadeChance == 4? players.get(0).rollToHit(enemies.get(0)):enemies.get(0) + " has evaded your attack.");
+													evading = false;
+												}
+											else if (advantage = true)
+												{
+													String fails = players.get(0).getName() + " came up to attack " + enemies.get(0).getName() +" with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + " but " + players.get(0).getName() + " missed.";
+													String succeeds = players.get(0).getName() + " hit " + enemies.get(0).getName() + " with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + ". " + players.get(0).dealDamage(enemies.get(0));
+													advantage = false;
+													
+													if (players.get(0).hits(enemies.get(0)) == false)
+														{
+															System.out.println(players.get(0).hits(enemies.get(0))? succeeds : fails);
+														}
+													else
+														{
+															System.out.println(succeeds);
+														}
+												}
+											else if (attackTwice == true)
+												{
+													System.out.println(players.get(0).rollToHit(enemies.get(0)));
+													System.out.println(" ");
+													System.out.println("Attacking again thanks to Martial Arts.");
+													System.out.println(" ");
+													System.out.println(players.get(0).rollToHit(enemies.get(0)));
+												}
+											else
+												{
+													System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
+												}
+										}
+									else if (userChoice == 6 && (players.get(0).getClassAbilityName().equals("Heal") || players.get(0).getClassAbilityName().equals("Vines") || players.get(0).getClassAbilityName().equals("Sneak") || players.get(0).getClassAbilityName().equals("Summon Dead") || players.get(0).getClassAbilityName().equals("Evade")))
+										{
+											useAbility();		//ADD THE ABILITY!! (Probably going to have to use a swirtch structure though.... Or you could create a method...))
 										}
 									break;
 								}
@@ -255,58 +418,155 @@ public class Main
 		
 		public static void enemysTurn()
 		{
-			int squaresLeft = enemies.get(0).getSpeed();
+			squaresLeft = enemies.get(0).getSpeed();
+			evading = false;
 			
 			while (squaresLeft > 0)
 				{
 					int randomDirection = (int)(Math.random()*4);
 					int randomMovement = (int)(Math.random()*squaresLeft) + 1;
 					
-					checkIfEnemyIsInRange();
+					checkIfPlayerIsInRange();
 					
-					if (enemyInRange == true)
+					if (playerInRange == true)
 						{
 							System.out.println(enemies.get(0).rollToHit(players.get(0)));
 							break;
 						}
 					
-					if (randomDirection == 0 && enemies.get(0).getRow() != 0)
+					if (randomDirection == 0 && enemies.get(0).getRow() != 0 && enemies.get(0).getRow() - randomMovement >= 0)
 						{
 							squaresLeft -= randomMovement;
 							enemies.get(0).setRow(enemies.get(0).getRow()-randomMovement);
 						}
-					else if (randomDirection == 1 && enemies.get(0).getRow() != arena.length-1)
+					else if (randomDirection == 1 && enemies.get(0).getRow() != arena.length-1 && enemies.get(0).getRow() + randomMovement < arena.length)
 						{
 							squaresLeft -= randomMovement;
 							enemies.get(0).setRow(enemies.get(0).getRow()+randomMovement);
 						}
-					else if (randomDirection == 2 && enemies.get(0).getCollumn() != 0)
+					else if (randomDirection == 2 && enemies.get(0).getCollumn() != 0 && enemies.get(0).getCollumn() - randomMovement >= 0)
 						{
 							squaresLeft -= randomMovement;
 							enemies.get(0).setCollumn(enemies.get(0).getCollumn()-randomMovement);
 						}
-					else if (randomDirection == 3 && enemies.get(0).getCollumn() != arena[0].length-1)
+					else if (randomDirection == 3 && enemies.get(0).getCollumn() != arena[0].length-1 && enemies.get(0).getCollumn() + randomMovement < arena[0].length)
 						{
 							squaresLeft -= randomMovement;
 							enemies.get(0).setCollumn(enemies.get(0).getCollumn()+randomMovement);
 						}
 					
-					checkIfEnemyIsInRange();
+					checkIfPlayerIsInRange();
 					
-					if (enemyInRange == true)
+					if (playerInRange == true)
 						{
+							System.out.println(enemies.get(0).rollToHit(players.get(0)));
 							break;
 						}
-					
-					System.out.println("Enemy Is Moving To " + enemies.get(0).getRow() + ", " + enemies.get(0).getCollumn());
-					System.out.println(squaresLeft);
-					System.out.println(" ");
 				}
+			System.out.println("Enemy Has Moved To " + enemies.get(0).getRow() + ", " + enemies.get(0).getCollumn());
 			
+		}
+		
+		public static void useAbility()
+		{
+			switch (players.get(0).getClassAbilityName())
+			{
+				case "Rage":
+						{
+							System.out.println(players.get(0).rage(enemies.get(0)));
+							break;
+						}
+				case "Heal":
+						{
+							System.out.println("Who would you like to heal?");
+							int i = 1;
+							for (Character c: players)
+								{
+									System.out.println("{" +i+ "} " + c.getName());
+									i++;
+								}
+							int userChoice = userInput.nextInt();
+							
+							System.out.println(players.get(0).heal(players.get(userChoice-1)));
+							break;
+						}
+				case "Vines":
+						{
+							System.out.println("Who would you like to use Vines on?");
+							int i = 1;
+							for (Character c: enemies)
+								{
+									System.out.println("{" + i + "} " + c.getName());
+									i++;
+								}
+							int userChoice = userInput.nextInt();
+							
+							System.out.println(players.get(0).vines(enemies.get(userChoice-1)));
+							break;
+						}
+				case "Sneak":
+						{
+							squaresLeft = 1;
+							usedAbility = true;
+							break;
+						}
+				case "Casting":
+						{
+							System.out.println("Who would you like to Cast a Spell on?");
+							int i = 1;
+							for (Character c: enemies)
+								{
+									System.out.println("{" + i + "} " + c.getName());
+									i++;
+								}
+							int userChoice = userInput.nextInt();
+							
+							System.out.println(players.get(0).casting(enemies.get(userChoice-1)));
+							break;
+						}
+				case "Summon Dead":
+						{
+							//I REALLY DONT WANT TO WORK ON THIS...
+							break;
+						}
+				case "Evade":
+						{
+							System.out.println("If the enemy attacks you on your next turn, you have 75% chance of evading it.");
+							evading = true;
+							break;
+						}
+				case "Perform":
+						{
+							System.out.println("Who would you like to Perform to?");
+							int i = 1;
+							for (Character c: players)
+								{
+									System.out.println("{" + i + "} " + c.getName());
+									i++;
+								}
+							int userChoice = userInput.nextInt();
+							
+							System.out.println(players.get(userChoice-1).getName() + " has advantage on it's next attack.");
+							break;
+						}
+				case "Martial Arts":
+						{
+							attackTwice = true;
+							System.out.println("You will be able to attack twice this turn.");
+							break;
+						}
+				case "Smite":
+						{
+							// FINISH WORKING ON THE ABILITIES!!!!!
+							break;
+						}
+			}
 		}
 		
 		public static void printArena()
 		{
+			wait(3);
+			
 			System.out.println("_________________________");
 			System.out.println("|     |     |     |     |");
 			System.out.println("| " + arena[0][0].getName().substring(0,3) + " |     |     |     |");
@@ -320,6 +580,8 @@ public class Main
 			System.out.println("|     |     |     |     |");
 			System.out.println("|     |     |     | " + enemies.get(0).getName().substring(0,3) + " |");
 			System.out.println("|_____|_____|_____|_____|");
+			
+			wait(3);
 		}
 		
 //		public static boolean determineIfSquareHasCharacter(int row, int col)
@@ -468,7 +730,7 @@ public class Main
 					System.out.println("{4} Rogue");
 					System.out.println("{5} Wizard");
 					System.out.println("{6} Warlock");
-					System.out.println("{7} Sorcerer");
+					System.out.println("{7} Ranger");
 					System.out.println("{8} Bard");
 					System.out.println("{9} Monk");
 					System.out.println("{10} Paladin");
@@ -933,7 +1195,7 @@ public class Main
 								}
 					}
 					
-					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, arena.length-1, arena[arena.length-1].length-1));
+					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, /*arena.length-1*/0, 2/*arena[arena.length-1].length-1*/));
 				}
 		}
 	
@@ -976,6 +1238,20 @@ public class Main
 						}
 				}
 			System.out.println(" ");
+		}
+		
+		public static void wait(int time)
+		{
+			for (int i = 0; i < time; i++)
+				{
+					try
+						{
+							Thread.sleep(1000);
+						} catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+				}
 		}
 	
 	}
