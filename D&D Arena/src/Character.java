@@ -42,17 +42,31 @@ public class Character
 			return this.getName() + " dealt " + damage + " damage to " + c.getName() + ".";
 		}
 		
+		public boolean hits(Character c)
+		{
+			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
+			if (roll > c.getArmorClass())
+				{	
+					
+					return true;
+				}
+			else
+				{
+					return false;
+				}
+		}
+		
 		public String rollToHit(Character c)
 		{
 			int roll = (int)(Math.random()*20)+ 1 + this.getWeapon().getToHitModifier();
 			if (roll > c.getArmorClass())
 				{	
 					
-					return this.getName() + " hit " + c.getName() + " with your " + this.getName() + "'s " + this.getWeapon().getName() + ". " + dealDamage(c);
+					return this.getName() + " hit " + c.getName() + " with " + this.getName() + "'s " + this.getWeapon().getName() + ". " + dealDamage(c);
 				}
 			else
 				{
-					return this.getName() + " came up to attack " + c.getName() +" with " + this.getName() + "'s " + this.getWeapon().getName() + " but you missed ";
+					return this.getName() + " came up to attack " + c.getName() +" with " + this.getName() + "'s " + this.getWeapon().getName() + " but " + this.getName() + " missed.";
 				}
 		}
 		
@@ -111,7 +125,7 @@ public class Character
 			
 		}
 		
-		
+
 		
 //		public void useAbility()
 //		{
