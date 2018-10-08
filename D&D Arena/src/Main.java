@@ -3,19 +3,32 @@ import java.util.ArrayList;
 
 public class Main
 	{
+		//LOOK THROUGH ALL OF THE STATIC VARIABLES AND SEE WHICH ONES YOU DONT NEED!!
+		
 		static Scanner userInput= new Scanner (System.in);
 		static Scanner userInputString;
 		static String enter;
 		static String userChoice;
+		
+		static boolean canMoveUp = false;
+		static boolean canMoveDown = false;
+		static boolean canMoveLeft = false;
+		static boolean canMoveRight = false;
+		static boolean canAttack = false;
+		static boolean canUseAbility = false;
+		static boolean attacked = false;
+		
+		static Character turn;
+		static Character[] enemiesInRange;
 		static boolean hasCharacterInSquare;
 		static boolean playerGoesFirst;
 		static boolean playing;
 		static boolean enemyInRange;
 		static boolean playerInRange;
-		static boolean usedAbility;
-		static boolean evading;
-		static boolean advantage;
-		static boolean attackTwice;
+		static boolean usedAbility = false;
+		static boolean evading = false;
+		static boolean advantage = false;
+		static boolean attackTwice = false;
 		static Character target;
 		static int squaresLeft;
 		
@@ -197,226 +210,464 @@ public class Main
 				}
 		}
 		
-		public static void checkIfEnemyIsInRange()
+		public static void checkIfEnemyIsInRange(Character c)
 		{
-			if (players.get(0).getRow() == enemies.get(0).getRow()) // Checks to see if the Enemy is in the same Row
+			enemiesInRange = new Character[enemies.size()];
+			int i = 0;
+			
+			for (Character e : enemies)
 				{
-					
-					if (players.get(0).getCollumn() == enemies.get(0).getCollumn() - players.get(0).getWeapon().getRange())
+					if (c.getRow() == e.getRow()) // Checks to see if the Enemy is in the same Row
 						{
-							enemyInRange = true;
+							
+							if (c.getCollumn() == e.getCollumn() - c.getWeapon().getRange())
+								{
+									enemyInRange = true;
+									enemiesInRange[i] = e;
+								}
+							else if (c.getCollumn() == e.getCollumn() + c.getWeapon().getRange())
+								{
+									enemyInRange = true;
+									enemiesInRange[i] = e;
+								}
+							else
+								{
+									enemyInRange = false;
+								}
 						}
-					else if (players.get(0).getCollumn() == enemies.get(0).getCollumn() + players.get(0).getWeapon().getRange())
+					else if (c.getCollumn() == e.getCollumn()) // Checks if the Enemy is in the same Collumn
 						{
-							enemyInRange = true;
+							if (c.getRow() == e.getRow() - c.getWeapon().getRange())
+								{
+									enemyInRange = true;
+									enemiesInRange[i] = e;
+								}
+							else if (c.getRow() == e.getRow() + c.getWeapon().getRange())
+								{
+									enemyInRange = true;
+									enemiesInRange[i] = e;
+								}
+							else
+								{
+									enemyInRange = false;
+								}
 						}
 					else
 						{
 							enemyInRange = false;
 						}
 				}
-			else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
+
+		}
+		
+		public static void showPlayerChoice(Character c)
+		{
+			int i = 1;
+			
+			System.out.println(" ");
+			System.out.println(c.getRow() != 0? "{"+i+"} Up": "{1} YOU CAN'T MOVE UP");
+			i++;
+			System.out.println(c.getRow() != arena.length-1? "{"+i+"} Down": "{2} YOU CAN'T MOVE DOWN");
+			i++;
+			System.out.println(c.getCollumn() != 0? "{3} Left": "{"+i+"} YOU CAN'T MOVE LEFT");
+			i++;
+			System.out.println(c.getCollumn() != arena[0].length-1? "{"+i+"} Right": "{4} YOU CAN'T MOVE RIGHT");
+			i++;
+			
+			canMoveUp = c.getRow() != 0? true : false;
+			canMoveDown = c.getRow() != arena.length-1? true : false;
+			canMoveLeft = c.getCollumn() != 0? true : false;
+			canMoveRight = c.getCollumn() != arena[0].length-1? true : false;
+			
+			checkIfEnemyIsInRange(c);
+			if (enemyInRange == true)
 				{
-					if (players.get(0).getRow() == enemies.get(0).getRow() - players.get(0).getWeapon().getRange())
+					for (Character e : enemiesInRange)
 						{
-							enemyInRange = true;
+							System.out.println("{" + i + "} Attack " + e.getName());
+							i++;
 						}
-					else if (players.get(0).getRow() == enemies.get(0).getRow() + players.get(0).getWeapon().getRange())
+					canAttack = true;
+					
+					if (usedAbility == false && (c.getClassAbilityName().equals("Rage") || c.getClassAbilityName().equals("Casting") || c.getClassAbilityName().equals("Perform") || c.getClassAbilityName().equals("Martial Arts") || c.getClassAbilityName().equals("Smite")))
 						{
-							enemyInRange = true;
+							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
+							i++;
+							canUseAbility = true;
 						}
-					else
+				}
+			System.out.println("{"+i+"} End Turn");
+		}
+		
+		public static void lastMovePlayer(Character c, int userChoice)
+		{
+			switch (enemiesInRange.length)
+			{
+				case 0:
 						{
-							enemyInRange = false;
+							if (userChoice == 1)
+								{
+									squaresLeft = 0;
+								}
+							break;
 						}
+				case 1:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canUseAbility == true)
+								{
+									useAbility(turn);
+									usedAbility = true;
+								}
+							else if (userChoice == 3)
+								{
+									squaresLeft = 0;
+								}
+							break;
+						}
+				case 2:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[1]));
+								}
+							else if (userChoice == 3 && canUseAbility == true)
+								{
+									useAbility(turn);
+									usedAbility = true;
+								}
+							else if (userChoice == 4)
+								{
+									squaresLeft = 0;
+								}
+							break;
+						}
+				case 3:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[1]));
+								}
+							else if (userChoice == 3 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[2]));
+								}
+							else if (userChoice == 4 && canUseAbility == true)
+								{
+									useAbility(turn);
+									usedAbility = true;
+								}
+							else if (userChoice == 5)
+								{
+									squaresLeft = 0;
+								}
+							break;
+						}
+				case 4:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[1]));
+								}
+							else if (userChoice == 3 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[2]));
+								}
+							else if (userChoice == 4 && canAttack == true)
+								{
+									System.out.println(c.rollToHit(enemiesInRange[3]));
+								}
+							else if (userChoice == 5 && canUseAbility == true)
+								{
+									useAbility(turn);
+									usedAbility = true;
+								}
+							else if (userChoice == 6)
+								{
+									squaresLeft = 0;
+								}
+							break;
+						}
+			}
+		}
+		
+		public static void movePlayer(Character c)
+		{
+			boolean moving = true;
+			
+			int userChoice = userInput.nextInt();
+			if (userChoice == 1 && canMoveUp == true)
+				{
+					while (moving)
+						{
+							System.out.println("How many spaces would like to move up?");
+							System.out.println("Available Movement Left: " + squaresLeft);
+							int squaresMove = userInput.nextInt();
+							if (c.getRow() - squaresMove >= 0)
+								{
+									squaresLeft -= squaresMove;
+									c.setRow(c.getRow() - squaresMove);
+									moving = false;
+								}
+							else
+								{
+									System.out.println("You can't move that far. Try a smaller number.");
+								}
+						}
+				}
+			else if (userChoice == 2 && canMoveDown == true)
+				{
+					while (moving)
+						{
+							System.out.println("How many spaces would like to move down?");
+							System.out.println("Available Movement Left: " + squaresLeft);
+							int squaresMove = userInput.nextInt();
+							if (c.getRow() - squaresMove < arena.length-1)
+								{
+									squaresLeft -= squaresMove;
+									c.setRow(c.getRow() + squaresMove);
+									moving = false;
+								}
+							else
+								{
+									System.out.println("You can't move that far. Try a smaller number.");
+								}
+						}	
+				}
+			else if (userChoice == 3 && canMoveLeft == true)
+				{
+					while (moving)
+						{
+							System.out.println("How many spaces would like to move left?");
+							System.out.println("Available Movement Left: " + squaresLeft);
+							int squaresMove = userInput.nextInt();
+							if (c.getCollumn() - squaresMove >= 0)
+								{
+									squaresLeft -= squaresMove;
+									c.setCollumn(c.getCollumn() - squaresMove);
+									moving = false;
+								}
+							else
+								{
+									System.out.println("You can't move that far. Try a smaller number.");
+								}
+						}
+				}
+			else if (userChoice == 4 && canMoveRight == true)
+				{
+					while (moving)
+						{
+							System.out.println("How many spaces would like to move right?");
+							System.out.println("Available Movement Left: " + squaresLeft);
+							int squaresMove = userInput.nextInt();
+							if (c.getCollumn() - squaresMove < arena.length-1)
+								{
+									squaresLeft -= squaresMove;
+									c.setCollumn(c.getCollumn() + squaresMove);
+									moving = false;
+								}
+							else
+								{
+									System.out.println("You can't move that far. Try a smaller number.");
+								}
+						}
+				}
+			else if (usedAbility == true)
+				{
+					
+				}
+			else if (userChoice > 4)
+				{
+					switch (enemiesInRange.length)
+					{
+						case 0:
+								{
+									break;
+								}
+						case 1:
+								{
+									if (userChoice == 5 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[0]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 6 && canUseAbility == true)
+										{
+											useAbility(turn);
+											usedAbility = true;
+										}
+									else if (userChoice == 7)
+										{
+											squaresLeft = 0;
+										}
+									break;
+								}
+						case 2:
+								{
+									if (userChoice == 5 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[0]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 6 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[1]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 7 && canUseAbility == true)
+										{
+											useAbility(turn);
+											usedAbility = true;
+										}
+									else if (userChoice == 8)
+										{
+											squaresLeft = 0;
+										}
+									break;
+								}
+						case 3:
+								{
+									if (userChoice == 5 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[0]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 6 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[1]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 7 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[2]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 8 && canUseAbility == true)
+										{
+											useAbility(turn);
+											usedAbility = true;
+										}
+									else if (userChoice == 9)
+										{
+											squaresLeft = 0;
+										}
+									break;
+								}
+						case 4:
+								{
+									if (userChoice == 5 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[0]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 6 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[1]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 7 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[2]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 8 && canAttack == true)
+										{
+											System.out.println(c.rollToHit(enemiesInRange[3]));
+											squaresLeft = 0;
+										}
+									else if (userChoice == 9 && canUseAbility == true)
+										{
+											useAbility(turn);
+											usedAbility = true;
+										}
+									else if (userChoice == 10)
+										{
+											squaresLeft = 0;
+										}
+									break;
+								}
+					}
 				}
 			else
 				{
-					enemyInRange = false;
+					System.out.println("YOU CAN'T DO THAT! TRY AGAIN!");
+				}
+		}
+		
+		public static void determineWhetherToContinueOrToStop(Character c)
+		{
+			if (squaresLeft > 0)
+				{
+					System.out.println(" ");
+					System.out.println("Where else would you like to move?");
+				}
+			else
+				{
+					int i = 1;
+					
+					if (attacked == false)
+						{
+							checkIfEnemyIsInRange(c);
+							for (Character e : enemiesInRange)
+								{
+									System.out.println("{" + i + "} Attack " + e.getName());
+									i++;
+								}
+							canAttack = true;
+						}
+
+					else if (usedAbility == false && (c.getClassAbilityName().equals("Heal") || c.getClassAbilityName().equals("Vines") || c.getClassAbilityName().equals("Sneak") || c.getClassAbilityName().equals("Summon Dead") || c.getClassAbilityName().equals("Evade")))
+						{
+							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
+							i++;
+						}
+					System.out.println("{"+i+"} End Turn");
+					
+					int userChoice = userInput.nextInt();
+					
+					lastMovePlayer(c, userChoice);
 				}
 		}
 		
 		public static void playersTurn()
 		{
-			System.out.println(" ");
-			System.out.println("Your base speed is " + players.get(0).getSpeed() + ".");
-			squaresLeft = players.get(0).getSpeed();
-			usedAbility = false;
-			attackTwice = false;
-			System.out.println("Where would you like to move?");
-			
-//			printTestingArena();
-			
-			while (squaresLeft > 0)
+			for (Character c: players)
 				{
-					enemyInRange = false;
+					turn = c;
 					
-					System.out.println("{1} Up");
-					System.out.println("{2} Down");
-					System.out.println("{3} Left");
-					System.out.println("{4} Right");
-				
-					checkIfEnemyIsInRange();
-					
-					if (enemyInRange == true)
+					System.out.println(" ");
+					System.out.println("Your base speed is " + c.getSpeed() + ".");
+					squaresLeft = c.getSpeed();
+					usedAbility = false;
+					attackTwice = false;
+					System.out.println("Where would you like to move?");
+			
+					while (squaresLeft > 0)
 						{
-							System.out.println("{5} Attack " + enemies.get(0).getName());
-							if (usedAbility = true)
-								{
-									
-								}
-							else if (players.get(0).getClassAbilityName().equals("Rage") || players.get(0).getClassAbilityName().equals("Casting") || players.get(0).getClassAbilityName().equals("Perform") ||players.get(0).getClassAbilityName().equals("Martial Arts") || players.get(0).getClassAbilityName().equals("Smite"))
-								{
-									System.out.println("{6} Use " + players.get(0).getClassAbilityName());
-								}
+							enemyInRange = false;
+							showPlayerChoice(c); //Gives the player choices of where to move, whether it can attack or use an ability, or to end turn
+							movePlayer(c);		//Basically does whatever the player has chosen to do
+							determineWhetherToContinueOrToStop(c);	//Determines whether the player still has the option of attacking, or to use an ability
 						}
-					
-					int userChoice = userInput.nextInt();
-					
-					if (userChoice == 1 && players.get(0).getRow() != 0)
-						{
-							System.out.println("How many spaces would you like to move up?");
-							System.out.println("Available Movement: " + squaresLeft);
-							int squaresMove = userInput.nextInt();
-							squaresLeft -= squaresMove;
-							players.get(0).setRow(players.get(0).getRow()-squaresMove);
-						}
-					else if (userChoice == 2 && players.get(0).getRow() != arena.length-1)
-						{
-							System.out.println("How many spaces would you like to move down?");
-							System.out.println("Available Movement: " + squaresLeft);
-							int squaresMove = userInput.nextInt();
-							squaresLeft -= squaresMove;
-							players.get(0).setRow(players.get(0).getRow()+squaresMove);
-						}
-					else if (userChoice == 3 && players.get(0).getCollumn() != 0)
-						{
-							System.out.println("How many spaces would you like to move left?");
-							System.out.println("Available Movement: " + squaresLeft);
-							int squaresMove = userInput.nextInt();
-							squaresLeft -= squaresMove;
-							players.get(0).setCollumn(players.get(0).getCollumn()-squaresMove);
-						}
-					else if (userChoice == 4 && players.get(0).getCollumn() != arena[0].length-1)
-						{
-							System.out.println("How many spaces would you like to move to the right?");
-							System.out.println("Available Movement: " + squaresLeft);
-							int squaresMove = userInput.nextInt();
-							squaresLeft -= squaresMove;
-							players.get(0).setCollumn(players.get(0).getCollumn()+squaresMove);
-						}
-					else if (usedAbility == true)
-						{
-							break;
-						}
-					else if (userChoice == 5)
-						{
-							int evadeChance;
-							
-							if (evading = true)
-								{
-									evadeChance = (int)(Math.random()*4);
-									
-									System.out.println(evadeChance == 4? players.get(0).rollToHit(enemies.get(0)):enemies.get(0) + " has evaded your attack.");
-								}
-							else if (advantage = true)
-								{
-									String fails = players.get(0).getName() + " came up to attack " + enemies.get(0).getName() +" with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + " but " + players.get(0).getName() + " missed.";
-									String succeeds = players.get(0).getName() + " hit " + enemies.get(0).getName() + " with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + ". " + players.get(0).dealDamage(enemies.get(0));
-									advantage = false;
-									
-									if (players.get(0).hits(enemies.get(0)) == false)
-										{
-											System.out.println(players.get(0).hits(enemies.get(0))? succeeds : fails);
-										}
-									else
-										{
-											System.out.println(succeeds);
-										}
-								}
-							else
-								{
-									System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
-								}
-							break;
-						}
-					else if (userChoice == 6)
-						{
-							useAbility();
-							usedAbility = true;
-						}
-					else
-						{
-							System.out.println("You can't move there.");
-						}
-					
-					if (squaresLeft > 0)
-						{
-							System.out.println("Where else would you like to move?");
-						}
-					else
-						{
-							checkIfEnemyIsInRange();
-							
-							if (enemyInRange == true)
-								{
-									System.out.println("{5} Attack " + enemies.get(0).getName());
-									System.out.println("{6} Use " + players.get(0).getClassAbilityName());
-									System.out.println("{7} End Turn");
-									userChoice = userInput.nextInt();
-									
-									if (userChoice == 5)
-										{
-											int evadeChance;
-											
-											if (evading = true)
-												{
-													evadeChance = (int)(Math.random()*4);
-													
-													System.out.println(evadeChance == 4? players.get(0).rollToHit(enemies.get(0)):enemies.get(0) + " has evaded your attack.");
-													evading = false;
-												}
-											else if (advantage = true)
-												{
-													String fails = players.get(0).getName() + " came up to attack " + enemies.get(0).getName() +" with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + " but " + players.get(0).getName() + " missed.";
-													String succeeds = players.get(0).getName() + " hit " + enemies.get(0).getName() + " with " + players.get(0).getName() + "'s " + players.get(0).getWeapon().getName() + ". " + players.get(0).dealDamage(enemies.get(0));
-													advantage = false;
-													
-													if (players.get(0).hits(enemies.get(0)) == false)
-														{
-															System.out.println(players.get(0).hits(enemies.get(0))? succeeds : fails);
-														}
-													else
-														{
-															System.out.println(succeeds);
-														}
-												}
-											else if (attackTwice == true)
-												{
-													System.out.println(players.get(0).rollToHit(enemies.get(0)));
-													System.out.println(" ");
-													System.out.println("Attacking again thanks to Martial Arts.");
-													System.out.println(" ");
-													System.out.println(players.get(0).rollToHit(enemies.get(0)));
-												}
-											else
-												{
-													System.out.println(players.get(0).rollToHit(enemies.get(0)));		//HARDCODING IS EVIL!!
-												}
-										}
-									else if (userChoice == 6 && (players.get(0).getClassAbilityName().equals("Heal") || players.get(0).getClassAbilityName().equals("Vines") || players.get(0).getClassAbilityName().equals("Sneak") || players.get(0).getClassAbilityName().equals("Summon Dead") || players.get(0).getClassAbilityName().equals("Evade")))
-										{
-											useAbility();		//ADD THE ABILITY!! (Probably going to have to use a swirtch structure though.... Or you could create a method...))
-										}
-									break;
-								}
-							
-							System.out.println("You can't move anymore. You ran out of speed.");
-						}
-				}
+				}	
 		}
 		
-		public static void enemysTurn()
+		public static void enemysTurn() // Change this so that it goes through all of the enemies in the enemies ArrayList
 		{
 			squaresLeft = enemies.get(0).getSpeed();
 			evading = false;
@@ -467,22 +718,22 @@ public class Main
 			
 		}
 		
-		public static void useAbility()
+		public static void useAbility(Character c) //YOU NEED TO WORK ON THIS! IT"S ALMOST DONE
 		{
-			switch (players.get(0).getClassAbilityName())
+			switch (c.getClassAbilityName())
 			{
 				case "Rage":
 						{
-							System.out.println(players.get(0).rage(enemies.get(0)));
+							System.out.println(c.rage(enemies.get(0)));
 							break;
 						}
 				case "Heal":
 						{
 							System.out.println("Who would you like to heal?");
 							int i = 1;
-							for (Character c: players)
+							for (Character options: players)
 								{
-									System.out.println("{" +i+ "} " + c.getName());
+									System.out.println("{" +i+ "} " + options.getName());
 									i++;
 								}
 							int userChoice = userInput.nextInt();
@@ -494,9 +745,9 @@ public class Main
 						{
 							System.out.println("Who would you like to use Vines on?");
 							int i = 1;
-							for (Character c: enemies)
+							for (Character options: enemies)
 								{
-									System.out.println("{" + i + "} " + c.getName());
+									System.out.println("{" + i + "} " + options.getName());
 									i++;
 								}
 							int userChoice = userInput.nextInt();
@@ -514,9 +765,9 @@ public class Main
 						{
 							System.out.println("Who would you like to Cast a Spell on?");
 							int i = 1;
-							for (Character c: enemies)
+							for (Character options: enemies)
 								{
-									System.out.println("{" + i + "} " + c.getName());
+									System.out.println("{" + i + "} " + options.getName());
 									i++;
 								}
 							int userChoice = userInput.nextInt();
@@ -539,9 +790,9 @@ public class Main
 						{
 							System.out.println("Who would you like to Perform to?");
 							int i = 1;
-							for (Character c: players)
+							for (Character options: players)
 								{
-									System.out.println("{" + i + "} " + c.getName());
+									System.out.println("{" + i + "} " + options.getName());
 									i++;
 								}
 							int userChoice = userInput.nextInt();
@@ -563,7 +814,7 @@ public class Main
 			}
 		}
 		
-		public static void printArena()
+		public static void printArena() //WORK ON THIS AS WELL! (Probably change it to a single Character[]. Hopefully that would make it easier))
 		{
 			wait(3);
 			
