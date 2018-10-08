@@ -66,27 +66,90 @@ public class Main
 					System.out.println(" ");
 					while (playing)
 						{
-							playersTurn();
-							if (players.get(0).getHitPoints() <= 0)
-								{
-									System.out.println("YOU HAVE DIED! GAME OVER!");
-									break;
-								}
-							else if (enemies.get(0).getHitPoints() <= 0)
-								{
-									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
-									break;
-								}
+							boolean enemyHasWon = false;
+							boolean playerHasWon = false;
 							
-							enemysTurn();
-							if (players.get(0).getHitPoints() <= 0)
+							for (Character p : players)
 								{
-									System.out.println("YOU HAVE DIED! GAME OVER!");
-									break;
+									playersTurn();
+									int numberOfDead = 0;
+									for (Character c: players)
+										{
+											if (c.getHitPoints() <= 0)
+												{
+													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
+													players.remove(c);
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
+											
+										}
+									if (numberOfDead == players.size()) 
+										{
+											enemyHasWon = true;
+											break;
+										}
+									
+									numberOfDead = 0;
+									for (Character e : enemies)
+										{
+											if (e.getHitPoints() <= 0)
+												{
+													System.out.println("THE ENEMY, " + e.getName().toUpperCase() + ", HAS BEEN KILLED!");
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : e.getName() + " has been removed from the board.");
+										}
+									if (numberOfDead == enemies.size()) 
+										{
+											playerHasWon = true;
+											break;
+										}
 								}
-							else if (enemies.get(0).getHitPoints() <= 0)
+						if (playerHasWon || enemyHasWon)
+							{
+								
+							}
+							
+							
+							for (Character e : enemies)
 								{
-									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
+									enemysTurn(e);
+									int numberOfDead = 0;
+									for (Character c: players)
+										{
+											if (c.getHitPoints() <= 0)
+												{
+													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
+													players.remove(c);
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
+									
+										}
+									if (numberOfDead == players.size()) 
+										{
+											enemyHasWon = true;
+											break;
+										}
+									numberOfDead = 0;
+									for (Character enemy : enemies)
+										{
+											if (enemy.getHitPoints() <= 0)
+												{
+													System.out.println("THE ENEMY, " + enemy.getName().toUpperCase() + ", HAS BEEN KILLED!");
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : enemy.getName() + " has been removed from the board.");
+										}
+									if (numberOfDead == enemies.size()) 
+										{
+											playerHasWon = true;
+											break;
+										}
+								}
+							if (enemyHasWon || playerHasWon)
+								{
 									break;
 								}
 						}
@@ -96,30 +159,91 @@ public class Main
 					System.out.println(" ");
 					while (playing == true)
 						{
-							enemysTurn();
-							if (players.get(0).getHitPoints() <= 0)
+							boolean enemyHasWon = false;
+							boolean playerHasWon = false;
+							
+							for (Character e : enemies)
 								{
-									System.out.println("YOU HAVE DIED! GAME OVER!");
-									break;
+									enemysTurn(e);
+									int numberOfDead = 0;
+									for (Character c: players)
+										{
+											if (c.getHitPoints() <= 0)
+												{
+													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
+													players.remove(c);
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
+									
+										}
+									if (numberOfDead == players.size()) 
+										{
+											enemyHasWon = true;
+											break;
+										}
+									numberOfDead = 0;
+									for (Character enemy : enemies)
+										{
+											if (enemy.getHitPoints() <= 0)
+												{
+													System.out.println("THE ENEMY, " + enemy.getName().toUpperCase() + ", HAS BEEN KILLED!");
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : enemy.getName() + " has been removed from the board.");
+										}
+									if (numberOfDead == enemies.size()) 
+										{
+											playerHasWon = true;
+											break;
+										}
 								}
-							else if (enemies.get(0).getHitPoints() <= 0)
+							if (enemyHasWon || playerHasWon)
 								{
-									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
 									break;
 								}
 							
-							playersTurn();
-							if (players.get(0).getHitPoints() <= 0)
+							
+							
+							for (Character p : players)
 								{
-									System.out.println("YOU HAVE DIED! GAME OVER!");
-									break;
+									playersTurn();
+									int numberOfDead = 0;
+									for (Character c: players)
+										{
+											if (c.getHitPoints() <= 0)
+												{
+													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
+													players.remove(c);
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
+											
+										}
+									if (numberOfDead == players.size()) 
+										{
+											enemyHasWon = true;
+											break;
+										}
+									
+									numberOfDead = 0;
+									for (Character e : enemies)
+										{
+											if (e.getHitPoints() <= 0)
+												{
+													System.out.println("THE ENEMY, " + e.getName().toUpperCase() + ", HAS BEEN KILLED!");
+													numberOfDead++;
+												}
+											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : e.getName() + " has been removed from the board.");
+										}
+									if (numberOfDead == enemies.size()) 
+										{
+											playerHasWon = true;
+											break;
+										}
 								}
-							else if (enemies.get(0).getHitPoints() <= 0)
-								{
-									System.out.println("YOU HAVE DEFEATED THE ENEMY!");
-									break;
 								}
-						}
+
 				}
 		}
 
@@ -171,42 +295,45 @@ public class Main
 				}
 		}
 		
-		public static void checkIfPlayerIsInRange()
+		public static void checkIfPlayerIsInRange(Character c)
 		{
-			if (players.get(0).getRow() == enemies.get(0).getRow()) // Checks to see if the Enemy is in the same Row
+			for (Character p: players)
 				{
-					
-					if (enemies.get(0).getCollumn() == players.get(0).getCollumn() - enemies.get(0).getWeapon().getRange())
+					if (p.getRow() == c.getRow()) // Checks to see if the Enemy is in the same Row
 						{
-							playerInRange = true;
+							
+							if (c.getCollumn() == players.get(0).getCollumn() - enemies.get(0).getWeapon().getRange())
+								{
+									playerInRange = true;
+								}
+							else if (enemies.get(0).getCollumn() == players.get(0).getCollumn() + enemies.get(0).getWeapon().getRange())
+								{
+									playerInRange = true;
+								}
+							else
+								{
+									playerInRange = false;
+								}
 						}
-					else if (enemies.get(0).getCollumn() == players.get(0).getCollumn() + enemies.get(0).getWeapon().getRange())
+					else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
 						{
-							playerInRange = true;
+							if (enemies.get(0).getRow() == players.get(0).getRow() - enemies.get(0).getWeapon().getRange())
+								{
+									playerInRange = true;
+								}
+							else if (enemies.get(0).getRow() == players.get(0).getRow() + enemies.get(0).getWeapon().getRange())
+								{
+									playerInRange = true;
+								}
+							else
+								{
+									playerInRange = false;
+								}
 						}
 					else
 						{
 							playerInRange = false;
 						}
-				}
-			else if (players.get(0).getCollumn() == enemies.get(0).getCollumn()) // Checks if the Enemy is in the same Collumn
-				{
-					if (enemies.get(0).getRow() == players.get(0).getRow() - enemies.get(0).getWeapon().getRange())
-						{
-							playerInRange = true;
-						}
-					else if (enemies.get(0).getRow() == players.get(0).getRow() + enemies.get(0).getWeapon().getRange())
-						{
-							playerInRange = true;
-						}
-					else
-						{
-							playerInRange = false;
-						}
-				}
-			else
-				{
-					playerInRange = false;
 				}
 		}
 		
@@ -235,7 +362,7 @@ public class Main
 									enemyInRange = false;
 								}
 						}
-					else if (c.getCollumn() == e.getCollumn()) // Checks if the Enemy is in the same Collumn
+					else if (c.getCollumn() == e.getCollumn()) //Checks to see if Enemy is in the same Collumn
 						{
 							if (c.getRow() == e.getRow() - c.getWeapon().getRange())
 								{
@@ -289,7 +416,7 @@ public class Main
 						}
 					canAttack = true;
 					
-					if (usedAbility == false && (c.getClassAbilityName().equals("Rage") || c.getClassAbilityName().equals("Casting") || c.getClassAbilityName().equals("Perform") || c.getClassAbilityName().equals("Martial Arts") || c.getClassAbilityName().equals("Smite")))
+					if (usedAbility == false && (c.getClassAbilityName().equals("Casting") || c.getClassAbilityName().equals("Perform") || c.getClassAbilityName().equals("Martial Arts") || c.getClassAbilityName().equals("Smite")))
 						{
 							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
 							i++;
@@ -631,7 +758,7 @@ public class Main
 							canAttack = true;
 						}
 
-					else if (usedAbility == false && (c.getClassAbilityName().equals("Heal") || c.getClassAbilityName().equals("Vines") || c.getClassAbilityName().equals("Sneak") || c.getClassAbilityName().equals("Summon Dead") || c.getClassAbilityName().equals("Evade")))
+					else if (usedAbility == false && (c.getClassAbilityName().equals("Rage") || c.getClassAbilityName().equals("Heal") || c.getClassAbilityName().equals("Vines") || c.getClassAbilityName().equals("Sneak") || c.getClassAbilityName().equals("Summon Dead") || c.getClassAbilityName().equals("Evade")))
 						{
 							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
 							i++;
@@ -667,9 +794,9 @@ public class Main
 				}	
 		}
 		
-		public static void enemysTurn() // Change this so that it goes through all of the enemies in the enemies ArrayList
+		public static void enemysTurn(Character e)
 		{
-			squaresLeft = enemies.get(0).getSpeed();
+			squaresLeft = e.getSpeed();
 			evading = false;
 			
 			while (squaresLeft > 0)
@@ -677,45 +804,123 @@ public class Main
 					int randomDirection = (int)(Math.random()*4);
 					int randomMovement = (int)(Math.random()*squaresLeft) + 1;
 					
-					checkIfPlayerIsInRange();
-					
+					for (Character c: players)
+						{
+							checkIfPlayerIsInRange(c);
+							if (playerInRange == true)
+								{
+									System.out.println(e.rollToHit(c));
+									break;
+								}
+						}
 					if (playerInRange == true)
 						{
-							System.out.println(enemies.get(0).rollToHit(players.get(0)));
 							break;
 						}
 					
-					if (randomDirection == 0 && enemies.get(0).getRow() != 0 && enemies.get(0).getRow() - randomMovement >= 0)
+					
+					if (randomDirection == 0 && e.getRow() != 0 && e.getRow() - randomMovement >= 0)
 						{
 							squaresLeft -= randomMovement;
-							enemies.get(0).setRow(enemies.get(0).getRow()-randomMovement);
+							e.setRow(e.getRow()-randomMovement);
 						}
-					else if (randomDirection == 1 && enemies.get(0).getRow() != arena.length-1 && enemies.get(0).getRow() + randomMovement < arena.length)
+					else if (randomDirection == 1 && e.getRow() != arena.length-1 && e.getRow() + randomMovement < arena.length)
 						{
 							squaresLeft -= randomMovement;
-							enemies.get(0).setRow(enemies.get(0).getRow()+randomMovement);
+							e.setRow(e.getRow()+randomMovement);
 						}
-					else if (randomDirection == 2 && enemies.get(0).getCollumn() != 0 && enemies.get(0).getCollumn() - randomMovement >= 0)
+					else if (randomDirection == 2 && e.getCollumn() != 0 && e.getCollumn() - randomMovement >= 0)
 						{
 							squaresLeft -= randomMovement;
-							enemies.get(0).setCollumn(enemies.get(0).getCollumn()-randomMovement);
+							e.setCollumn(e.getCollumn()-randomMovement);
 						}
-					else if (randomDirection == 3 && enemies.get(0).getCollumn() != arena[0].length-1 && enemies.get(0).getCollumn() + randomMovement < arena[0].length)
+					else if (randomDirection == 3 && e.getCollumn() != arena[0].length-1 && e.getCollumn() + randomMovement < arena[0].length)
 						{
 							squaresLeft -= randomMovement;
-							enemies.get(0).setCollumn(enemies.get(0).getCollumn()+randomMovement);
+							e.setCollumn(e.getCollumn()+randomMovement);
 						}
 					
-					checkIfPlayerIsInRange();
-					
+					for (Character c: players)
+						{
+							checkIfPlayerIsInRange(c);
+							if (playerInRange == true)
+								{
+									System.out.println(e.rollToHit(c));
+									break;
+								}
+						}
 					if (playerInRange == true)
 						{
-							System.out.println(enemies.get(0).rollToHit(players.get(0)));
 							break;
 						}
 				}
-			System.out.println("Enemy Has Moved To " + enemies.get(0).getRow() + ", " + enemies.get(0).getCollumn());
+			System.out.println("Enemy Has Moved To " + e.getRow() + ", " + e.getCollumn());
 			
+		}
+		
+		public static void rageOptions(Character c)
+		{
+			int userChoice = userInput.nextInt();
+			
+			switch (enemiesInRange.length)
+			{
+				case 1:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[0]));
+								}
+							break;
+						}
+				case 2:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[1]));
+								}
+							break;
+						}
+				case 3:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[1]));
+								}
+							else if (userChoice == 3 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[2]));
+								}
+							break;
+						}
+				case 4:
+						{
+							if (userChoice == 1 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[0]));
+								}
+							else if (userChoice == 2 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[1]));
+								}
+							else if (userChoice == 3 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[2]));
+								}
+							else if (userChoice == 4 && canAttack == true)
+								{
+									System.out.println(c.rage(enemiesInRange[3]));
+								}
+							break;
+						}
+			}
 		}
 		
 		public static void useAbility(Character c) //YOU NEED TO WORK ON THIS! IT"S ALMOST DONE
@@ -724,7 +929,15 @@ public class Main
 			{
 				case "Rage":
 						{
-							System.out.println(c.rage(enemies.get(0)));
+							int i = 1;
+							System.out.println("Who would you like to use Rage on?");
+							checkIfEnemyIsInRange(c);
+							for(Character e: enemiesInRange)
+								{
+									System.out.println("{"+i+"} " + e.getName());
+									i++;
+								}
+							rageOptions(c);
 							break;
 						}
 				case "Heal":
@@ -738,7 +951,7 @@ public class Main
 								}
 							int userChoice = userInput.nextInt();
 							
-							System.out.println(players.get(0).heal(players.get(userChoice-1)));
+							System.out.println(c.heal(players.get(userChoice-1)));
 							break;
 						}
 				case "Vines":
@@ -752,13 +965,14 @@ public class Main
 								}
 							int userChoice = userInput.nextInt();
 							
-							System.out.println(players.get(0).vines(enemies.get(userChoice-1)));
+							System.out.println(c.vines(enemies.get(userChoice-1)));
 							break;
 						}
 				case "Sneak":
 						{
 							squaresLeft = 1;
 							usedAbility = true;
+							attacked = true;
 							break;
 						}
 				case "Casting":
