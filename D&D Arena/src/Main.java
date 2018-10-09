@@ -31,6 +31,8 @@ public class Main
 		static boolean attackTwice = false;
 		static Character target;
 		static int squaresLeft;
+		static int numberOfDead;
+		static int originalSize;
 		
 		static String name;
 		static String characterClass;
@@ -43,7 +45,7 @@ public class Main
 		
 		static ArrayList<Character> players = new ArrayList<Character>();
 		static ArrayList<Character> enemies = new ArrayList<Character>();
-		static Character[][] arena;
+		static String[][] arena;
 		
 		public static void main(String[]args)
 		{
@@ -53,6 +55,53 @@ public class Main
 			showTheRules();
 			gamePlay();
 //			printArena();
+		}
+		
+		public static void checkForEnemyDeath()
+		{
+			originalSize = enemies.size();
+			Character[] peopleWhoDie = new Character[enemies.size()];
+			
+			for (Character e : enemies) //MAYBE ITS BECAUSE YOU ARE REMOVING THE ENEMY WITHIN THE FOR EACH LOOP. TRY REMOVING THE ENEMY AFTER GOING THROUGH THE FOR EACH LOOP. PROBABLY GOING TO HAVE TO CREAT A CHARACTER ARRAY CALLED PEOPLEWHODIE. THEN, YOU CAN REMOVE THE ENEMIES BY CALLING enemies.remove(peopleWhoDie[0]);
+				{
+					if (e.getHitPoints() <= 0)
+						{
+							System.out.println( e.getName().toUpperCase() + " HAS DIED!");
+							peopleWhoDie[numberOfDead] = e;
+							numberOfDead++;
+						}
+				}
+			System.out.println(numberOfDead == originalSize ? "NO ENEMIES LEFT ALIVE! YOU HAVE WON!" : "");
+			for (int i = 0; i < numberOfDead; i++)
+				{
+					enemies.remove(peopleWhoDie[i]);
+				}
+			
+			System.out.println(" ");
+		}
+		
+		public static void checkForPlayerDeath()
+		{
+			originalSize = players.size();
+			Character[] peopleWhoDie = new Character[players.size()];
+			
+			for (Character p : players)
+				{
+					if (p.getHitPoints() <= 0)
+						{
+							System.out.println( p.getName().toUpperCase() + " HAS DIED!");
+							peopleWhoDie[numberOfDead] = p;
+							numberOfDead++;
+						}
+				}
+			System.out.println(numberOfDead == originalSize ? "NO PLAYERS LEFT ALIVE! GAME OVER!" : "");
+			
+			for (int i = 0; i < numberOfDead; i++)
+				{
+					enemies.remove(peopleWhoDie[i]);
+				}
+			
+			System.out.println(" ");
 		}
 		
 		public static void gamePlay()
@@ -72,35 +121,18 @@ public class Main
 							for (Character p : players)
 								{
 									playersTurn();
-									int numberOfDead = 0;
-									for (Character c: players)
-										{
-											if (c.getHitPoints() <= 0)
-												{
-													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
-													players.remove(c);
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
-											
-										}
-									if (numberOfDead == players.size()) 
+									
+									numberOfDead = 0;
+									checkForPlayerDeath();
+									if (numberOfDead == originalSize) 
 										{
 											enemyHasWon = true;
 											break;
 										}
 									
 									numberOfDead = 0;
-									for (Character e : enemies)
-										{
-											if (e.getHitPoints() <= 0)
-												{
-													System.out.println("THE ENEMY, " + e.getName().toUpperCase() + ", HAS BEEN KILLED!");
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : e.getName() + " has been removed from the board.");
-										}
-									if (numberOfDead == enemies.size()) 
+									checkForEnemyDeath();
+									if (numberOfDead == originalSize) 
 										{
 											playerHasWon = true;
 											break;
@@ -108,41 +140,25 @@ public class Main
 								}
 						if (playerHasWon || enemyHasWon)
 							{
-								
+								break;
 							}
 							
 							
 							for (Character e : enemies)
 								{
 									enemysTurn(e);
-									int numberOfDead = 0;
-									for (Character c: players)
-										{
-											if (c.getHitPoints() <= 0)
-												{
-													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
-													players.remove(c);
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
 									
-										}
-									if (numberOfDead == players.size()) 
+									numberOfDead = 0;
+									checkForPlayerDeath();
+									if (numberOfDead == originalSize) 
 										{
 											enemyHasWon = true;
 											break;
 										}
 									numberOfDead = 0;
-									for (Character enemy : enemies)
-										{
-											if (enemy.getHitPoints() <= 0)
-												{
-													System.out.println("THE ENEMY, " + enemy.getName().toUpperCase() + ", HAS BEEN KILLED!");
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : enemy.getName() + " has been removed from the board.");
-										}
-									if (numberOfDead == enemies.size()) 
+									
+									checkForEnemyDeath();
+									if (numberOfDead == originalSize) 
 										{
 											playerHasWon = true;
 											break;
@@ -165,92 +181,68 @@ public class Main
 							for (Character e : enemies)
 								{
 									enemysTurn(e);
-									int numberOfDead = 0;
-									for (Character c: players)
-										{
-											if (c.getHitPoints() <= 0)
-												{
-													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
-													players.remove(c);
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
-									
-										}
-									if (numberOfDead == players.size()) 
+									numberOfDead = 0;
+									checkForPlayerDeath();
+									if (numberOfDead == originalSize) 
 										{
 											enemyHasWon = true;
 											break;
 										}
+									
 									numberOfDead = 0;
-									for (Character enemy : enemies)
-										{
-											if (enemy.getHitPoints() <= 0)
-												{
-													System.out.println("THE ENEMY, " + enemy.getName().toUpperCase() + ", HAS BEEN KILLED!");
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : enemy.getName() + " has been removed from the board.");
-										}
-									if (numberOfDead == enemies.size()) 
+									checkForEnemyDeath();
+									if (numberOfDead == originalSize) 
 										{
 											playerHasWon = true;
 											break;
 										}
 								}
-							if (enemyHasWon || playerHasWon)
-								{
-									break;
-								}
-							
-							
+						if (playerHasWon || enemyHasWon)
+							{
+								break;
+							}
 							
 							for (Character p : players)
 								{
 									playersTurn();
-									int numberOfDead = 0;
-									for (Character c: players)
-										{
-											if (c.getHitPoints() <= 0)
-												{
-													System.out.println(c.getName().toUpperCase() + " HAS DIED!");
-													players.remove(c);
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == players.size()? "NO PLAYERS LEFT! YOU HAVE LOST!" : c.getName() + " has been removed from the party.");
-											
-										}
-									if (numberOfDead == players.size()) 
+									numberOfDead = 0;
+									checkForPlayerDeath();
+									if (numberOfDead == originalSize) 
 										{
 											enemyHasWon = true;
 											break;
 										}
 									
 									numberOfDead = 0;
-									for (Character e : enemies)
-										{
-											if (e.getHitPoints() <= 0)
-												{
-													System.out.println("THE ENEMY, " + e.getName().toUpperCase() + ", HAS BEEN KILLED!");
-													numberOfDead++;
-												}
-											System.out.println(numberOfDead == enemies.size()? "NO ENEMIES LEFT! YOU HAVE WON!" : e.getName() + " has been removed from the board.");
-										}
-									if (numberOfDead == enemies.size()) 
+									checkForEnemyDeath();
+									if (numberOfDead == originalSize) 
 										{
 											playerHasWon = true;
 											break;
 										}
 								}
-								}
-
+						if (playerHasWon || enemyHasWon)
+							{
+								break;
+							}
+						}
 				}
 		}
 
 		public static void determineWhoGoesFirstOrSecond()
 		{
-			arena[0][0] = players.get(0);
-			arena[arena.length-1][arena[arena.length-1].length-1] = enemies.get(0);
+//			int i = 0;
+//			for (Character c : players)
+//				{
+//					arena[i][0] = c;
+//					i++;
+//				}
+//			i = 1;
+//			for (Character e : enemies)
+//				{
+//					arena[arena.length - i]  [arena  [arena.length - 1]  .length - 1] = e;
+//					i++;
+//				}
 			
 			System.out.println("Press enter to roll to see who goes first or second.");
 			Scanner userInput2 = new Scanner(System.in);
@@ -351,11 +343,13 @@ public class Main
 								{
 									enemyInRange = true;
 									enemiesInRange[i] = e;
+									i++;
 								}
 							else if (c.getCollumn() == e.getCollumn() + c.getWeapon().getRange())
 								{
 									enemyInRange = true;
 									enemiesInRange[i] = e;
+									i++;
 								}
 							else
 								{
@@ -368,11 +362,13 @@ public class Main
 								{
 									enemyInRange = true;
 									enemiesInRange[i] = e;
+									i++;
 								}
 							else if (c.getRow() == e.getRow() + c.getWeapon().getRange())
 								{
 									enemyInRange = true;
 									enemiesInRange[i] = e;
+									i++;
 								}
 							else
 								{
@@ -384,7 +380,10 @@ public class Main
 							enemyInRange = false;
 						}
 				}
-
+			if (i == 0)
+				{
+					enemiesInRange = null;
+				}
 		}
 		
 		public static void showPlayerChoice(Character c)
@@ -396,7 +395,7 @@ public class Main
 			i++;
 			System.out.println(c.getRow() != arena.length-1? "{"+i+"} Down": "{2} YOU CAN'T MOVE DOWN");
 			i++;
-			System.out.println(c.getCollumn() != 0? "{3} Left": "{"+i+"} YOU CAN'T MOVE LEFT");
+			System.out.println(c.getCollumn() != 0? "{"+i+"} Left": "{3} YOU CAN'T MOVE LEFT");
 			i++;
 			System.out.println(c.getCollumn() != arena[0].length-1? "{"+i+"} Right": "{4} YOU CAN'T MOVE RIGHT");
 			i++;
@@ -409,128 +408,128 @@ public class Main
 			checkIfEnemyIsInRange(c);
 			if (enemyInRange == true)
 				{
-					for (Character e : enemiesInRange)
+					if (attacked == false)
 						{
-							System.out.println("{" + i + "} Attack " + e.getName());
-							i++;
+							for (Character e : enemiesInRange)
+								{
+									System.out.println("{" + i + "} Attack " + e.getName());
+									i++;
+								}
+							canAttack = true;
 						}
-					canAttack = true;
-					
-					if (usedAbility == false && (c.getClassAbilityName().equals("Casting") || c.getClassAbilityName().equals("Perform") || c.getClassAbilityName().equals("Martial Arts") || c.getClassAbilityName().equals("Smite")))
-						{
-							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
-							i++;
-							canUseAbility = true;
-						}
+					System.out.println("{"+i+"} End Turn");
 				}
-			System.out.println("{"+i+"} End Turn");
 		}
 		
 		public static void lastMovePlayer(Character c, int userChoice)
 		{
-			switch (enemiesInRange.length)
-			{
-				case 0:
+			if (attacked == false)
+				{
+					if (enemiesInRange == null)
 						{
-							if (userChoice == 1)
-								{
-									squaresLeft = 0;
-								}
-							break;
+							
 						}
-				case 1:
+					else
 						{
-							if (userChoice == 1 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[0]));
-								}
-							else if (userChoice == 2 && canUseAbility == true)
-								{
-									useAbility(turn);
-									usedAbility = true;
-								}
-							else if (userChoice == 3)
-								{
-									squaresLeft = 0;
-								}
-							break;
+							switch (enemiesInRange.length)
+							{
+								case 0:
+										{
+											if (userChoice == 1)
+												{
+													squaresLeft = 0;
+												}
+											break;
+										}
+								case 1:
+										{
+											if (userChoice == 1 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[0]));
+												}
+											else if (userChoice == 2)
+												{
+													squaresLeft = 0;
+												}
+											break;
+										}
+								case 2:
+										{
+											if (userChoice == 1 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[0]));
+												}
+											else if (userChoice == 2 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[1]));
+												}
+											else if (userChoice == 3)
+												{
+													squaresLeft = 0;
+												}
+											break;
+										}
+								case 3:
+										{
+											if (userChoice == 1 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[0]));
+												}
+											else if (userChoice == 2 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[1]));
+												}
+											else if (userChoice == 3 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[2]));
+												}
+											else if (userChoice == 4)
+												{
+													squaresLeft = 0;
+												}
+											break;
+										}
+								case 4:
+										{
+											if (userChoice == 1 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[0]));
+												}
+											else if (userChoice == 2 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[1]));
+												}
+											else if (userChoice == 3 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[2]));
+												}
+											else if (userChoice == 4 && canAttack == true)
+												{
+													System.out.println(c.rollToHit(enemiesInRange[3]));
+												}
+											else if (userChoice == 5)
+												{
+													squaresLeft = 0;
+												}
+											break;
+										}
+							}
 						}
-				case 2:
+				}
+			else
+				{
+					if (userChoice == 1 && canUseAbility == true)
 						{
-							if (userChoice == 1 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[0]));
-								}
-							else if (userChoice == 2 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[1]));
-								}
-							else if (userChoice == 3 && canUseAbility == true)
-								{
-									useAbility(turn);
-									usedAbility = true;
-								}
-							else if (userChoice == 4)
-								{
-									squaresLeft = 0;
-								}
-							break;
+							useAbility(turn);
+							usedAbility = true;
 						}
-				case 3:
+					else if (userChoice == 1 || userChoice == 2)
 						{
-							if (userChoice == 1 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[0]));
-								}
-							else if (userChoice == 2 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[1]));
-								}
-							else if (userChoice == 3 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[2]));
-								}
-							else if (userChoice == 4 && canUseAbility == true)
-								{
-									useAbility(turn);
-									usedAbility = true;
-								}
-							else if (userChoice == 5)
-								{
-									squaresLeft = 0;
-								}
-							break;
+							squaresLeft = 0;
 						}
-				case 4:
-						{
-							if (userChoice == 1 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[0]));
-								}
-							else if (userChoice == 2 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[1]));
-								}
-							else if (userChoice == 3 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[2]));
-								}
-							else if (userChoice == 4 && canAttack == true)
-								{
-									System.out.println(c.rollToHit(enemiesInRange[3]));
-								}
-							else if (userChoice == 5 && canUseAbility == true)
-								{
-									useAbility(turn);
-									usedAbility = true;
-								}
-							else if (userChoice == 6)
-								{
-									squaresLeft = 0;
-								}
-							break;
-						}
-			}
+				}
+			
+			printArena();
 		}
 		
 		public static void movePlayer(Character c)
@@ -632,13 +631,9 @@ public class Main
 										{
 											System.out.println(c.rollToHit(enemiesInRange[0]));
 											squaresLeft = 0;
+											attacked = true;
 										}
-									else if (userChoice == 6 && canUseAbility == true)
-										{
-											useAbility(turn);
-											usedAbility = true;
-										}
-									else if (userChoice == 7)
+									else if (userChoice == 6)
 										{
 											squaresLeft = 0;
 										}
@@ -650,18 +645,15 @@ public class Main
 										{
 											System.out.println(c.rollToHit(enemiesInRange[0]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 6 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[1]));
 											squaresLeft = 0;
+											attacked = true;
 										}
-									else if (userChoice == 7 && canUseAbility == true)
-										{
-											useAbility(turn);
-											usedAbility = true;
-										}
-									else if (userChoice == 8)
+									else if (userChoice == 7)
 										{
 											squaresLeft = 0;
 										}
@@ -673,23 +665,21 @@ public class Main
 										{
 											System.out.println(c.rollToHit(enemiesInRange[0]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 6 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[1]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 7 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[2]));
 											squaresLeft = 0;
+											attacked = true;
 										}
-									else if (userChoice == 8 && canUseAbility == true)
-										{
-											useAbility(turn);
-											usedAbility = true;
-										}
-									else if (userChoice == 9)
+									else if (userChoice == 8)
 										{
 											squaresLeft = 0;
 										}
@@ -701,28 +691,27 @@ public class Main
 										{
 											System.out.println(c.rollToHit(enemiesInRange[0]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 6 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[1]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 7 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[2]));
 											squaresLeft = 0;
+											attacked = true;
 										}
 									else if (userChoice == 8 && canAttack == true)
 										{
 											System.out.println(c.rollToHit(enemiesInRange[3]));
 											squaresLeft = 0;
+											attacked = true;
 										}
-									else if (userChoice == 9 && canUseAbility == true)
-										{
-											useAbility(turn);
-											usedAbility = true;
-										}
-									else if (userChoice == 10)
+									else if (userChoice == 9)
 										{
 											squaresLeft = 0;
 										}
@@ -734,6 +723,8 @@ public class Main
 				{
 					System.out.println("YOU CAN'T DO THAT! TRY AGAIN!");
 				}
+			
+			printArena();
 		}
 		
 		public static void determineWhetherToContinueOrToStop(Character c)
@@ -750,19 +741,22 @@ public class Main
 					if (attacked == false)
 						{
 							checkIfEnemyIsInRange(c);
-							for (Character e : enemiesInRange)
+							if (enemiesInRange == null)
 								{
-									System.out.println("{" + i + "} Attack " + e.getName());
-									i++;
+									
 								}
-							canAttack = true;
+							else
+								{
+									for (Character e : enemiesInRange)
+										{
+											System.out.println("{" + i + "} Attack " + e.getName());
+											i++;
+										}
+									canAttack = true;
+								}
+							
 						}
-
-					else if (usedAbility == false && (c.getClassAbilityName().equals("Rage") || c.getClassAbilityName().equals("Heal") || c.getClassAbilityName().equals("Vines") || c.getClassAbilityName().equals("Sneak") || c.getClassAbilityName().equals("Summon Dead") || c.getClassAbilityName().equals("Evade")))
-						{
-							System.out.println("{" + i + "} Use " + c.getClassAbilityName());
-							i++;
-						}
+					
 					System.out.println("{"+i+"} End Turn");
 					
 					int userChoice = userInput.nextInt();
@@ -782,14 +776,15 @@ public class Main
 					squaresLeft = c.getSpeed();
 					usedAbility = false;
 					attackTwice = false;
+					attacked = false;
 					System.out.println("Where would you like to move?");
 			
 					while (squaresLeft > 0)
 						{
 							enemyInRange = false;
-							showPlayerChoice(c); //Gives the player choices of where to move, whether it can attack or use an ability, or to end turn
-							movePlayer(c);		//Basically does whatever the player has chosen to do
-							determineWhetherToContinueOrToStop(c);	//Determines whether the player still has the option of attacking, or to use an ability
+							showPlayerChoice(c); 								//Gives the player choices of where to move, whether it can attack or use an ability, or to end turn
+							movePlayer(c);										//Basically does whatever the player has chosen to do
+							determineWhetherToContinueOrToStop(c);				//Determines whether the player still has the option of attacking, or to use an ability
 						}
 				}	
 		}
@@ -854,7 +849,7 @@ public class Main
 							break;
 						}
 				}
-			System.out.println("Enemy Has Moved To " + e.getRow() + ", " + e.getCollumn());
+			printArena();
 			
 		}
 		
@@ -1030,123 +1025,35 @@ public class Main
 		
 		public static void printArena() //WORK ON THIS AS WELL! (Probably change it to a single Character[]. Hopefully that would make it easier))
 		{
-			wait(3);
+			wait(1);
+			
+			for (int row = 0; row < arena.length; row++)
+				{
+					for (int col = 0; col < arena[row].length; col++)
+						{
+							arena[row][col] = "   ";
+						}
+				}
+			arena[players.get(0).getRow()][players.get(0).getCollumn()] = players.get(0).getName().substring(0,3);
+			arena[enemies.get(0).getRow()][enemies.get(0).getCollumn()] = enemies.get(0).getName().substring(0,3);
+			
 			
 			System.out.println("_________________________");
 			System.out.println("|     |     |     |     |");
-			System.out.println("| " + arena[0][0].getName().substring(0,3) + " |     |     |     |");
+			System.out.println("| " + arena[0][0] + " | " + arena[0][1] + " | " + arena[0][2] + " | " + arena[0][3] + " |");
 			System.out.println("|_____|_____|_____|_____|");
 			System.out.println("|     |     |     |     |");
-			System.out.println("|     |     |     |     |");
+			System.out.println("| " + arena[1][0] + " | " + arena[1][1] + " | " + arena[1][2] + " | " + arena[1][3] + " |");
 			System.out.println("|_____|_____|_____|_____|");
 			System.out.println("|     |     |     |     |");
-			System.out.println("|     |     |     |     |");
+			System.out.println("| " + arena[2][0] + " | " + arena[2][1] + " | " + arena[2][2] + " | " + arena[2][3] + " |");
 			System.out.println("|_____|_____|_____|_____|");
 			System.out.println("|     |     |     |     |");
-			System.out.println("|     |     |     | " + enemies.get(0).getName().substring(0,3) + " |");
+			System.out.println("| " + arena[3][0] + " | " + arena[3][1] + " | " + arena[3][2] + " | " + arena[3][3] + " |");
 			System.out.println("|_____|_____|_____|_____|");
 			
-			wait(3);
+			wait(1);
 		}
-		
-//		public static boolean determineIfSquareHasCharacter(int row, int col)
-//		{
-//			if (arena[row][col].hashCode() == 0)
-//				{
-//					hasCharacterInSquare = true;
-//					return true;
-//				}
-//			else
-//				{
-//					hasCharacterInSquare = false;
-//					return false;
-//				}
-//		}
-//		
-//		
-//		public static void printArena()
-//		{
-//			
-//			
-//			for (int row = 0; row < arena.length; row++)
-//				{
-//					for (int col = 0; col < arena[row].length; col++)
-//						{
-//							
-//							if (determineIfSquareHasCharacter(row, col) == false)
-//								{
-//									System.out.println("______");
-//									System.out.println("|     ");
-//									System.out.println("|_____");
-//								}
-//							else
-//								{
-//									System.out.println("______");
-//									System.out.println("|  " + arena[row][col].getName().substring(0,1) + "  ");
-//									System.out.println("|_____");
-//								}
-//						}
-//				}
-//			
-//		}	
-			
-//			switch (arena.length)
-//			{
-//				case 4:
-//						{
-//							System.out.println("_________________________");
-//							System.out.println("|     |     |     |     |");
-//							System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |  " + arena[0][1].getName().substring(0,1) + "  |  " + arena[0][2].getName().substring(0,1) + "  |  " + arena[0][3].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |");
-//							System.out.println("|  " + arena[1][0].getName().substring(0,1) + "  |  " + arena[1][1].getName().substring(0,1) + "  |  " + arena[1][2].getName().substring(0,1) + "  |  " + arena[1][3].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |");
-//							System.out.println("|  " + arena[2][0].getName().substring(0,1) + "  |  " + arena[2][1].getName().substring(0,1) + "  |  " + arena[2][2].getName().substring(0,1) + "  |  " + arena[2][3].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |");
-//							System.out.println("|  " + arena[3][0].getName().substring(0,1) + "  |  " + arena[3][1].getName().substring(0,1) + "  |  " + arena[3][2].getName().substring(0,1) + "  |  " + arena[3][3].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|");
-//							break;
-//						}
-//				case 5:
-//						{
-//							System.out.println("_______________________________");
-//							System.out.println("|     |     |     |     |     |");
-//							System.out.println("|  " + arena[0][0].getName().substring(0,1) + "  |  " + arena[0][1].getName().substring(0,1) + "  |  " + arena[0][2].getName().substring(0,1) + "  |  " + arena[0][3].getName().substring(0,1) + "  |  " + arena[0][4].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |     |");
-//							System.out.println("|  " + arena[1][0].getName().substring(0,1) + "  |  " + arena[1][1].getName().substring(0,1) + "  |  " + arena[1][2].getName().substring(0,1) + "  |  " + arena[1][3].getName().substring(0,1) + "  |  " + arena[1][4].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |     |");
-//							System.out.println("|  " + arena[2][0].getName().substring(0,1) + "  |  " + arena[2][1].getName().substring(0,1) + "  |  " + arena[2][2].getName().substring(0,1) + "  |  " + arena[2][3].getName().substring(0,1) + "  |  " + arena[2][4].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |     |");
-//							System.out.println("|  " + arena[3][0].getName().substring(0,1) + "  |  " + arena[3][1].getName().substring(0,1) + "  |  " + arena[3][2].getName().substring(0,1) + "  |  " + arena[3][3].getName().substring(0,1) + "  |  " + arena[3][4].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|_____|");
-//							System.out.println("|     |     |     |     |     |");
-//							System.out.println("|  " + arena[4][0].getName().substring(0,1) + "  |  " + arena[4][1].getName().substring(0,1) + "  |  " + arena[4][2].getName().substring(0,1) + "  |  " + arena[4][3].getName().substring(0,1) + "  |  " + arena[4][4].getName().substring(0,1) + "  |");
-//							System.out.println("|_____|_____|_____|_____|_____|");
-//							break;
-//						}
-//				case 6:
-//						{
-//							break;
-//						}
-//				case 7:
-//						{
-//							break;
-//						}
-//				case 8:
-//						{
-//							break;
-//						}
-//				case 10:
-//						{
-//							break;
-//						}
-//			}
-//		}
 		
 		public static void titleScreen()
 		{
@@ -1481,11 +1388,6 @@ public class Main
 				{
 					System.out.println("Choose a map level");
 					System.out.println("{1} Simple (4 x 4 Grid)");
-					System.out.println("{2} Easy (5 x 5 Grid)");
-					System.out.println("{3} Medium (6 x 6 Grid)");
-					System.out.println("{4} Hard (7 x 7 Grid)");
-					System.out.println("{5} Epic (8 x 8 Grid)");
-					System.out.println("{6} Legendary (10 x 10 Grid)");
 					
 					int mapChoice = userInput.nextInt();
 					
@@ -1494,37 +1396,7 @@ public class Main
 						case 1:
 								{
 									choosingMap = false;
-									arena = new Character[4][4];
-									break;
-								}
-						case 2:
-								{
-									choosingMap = false;
-									arena = new Character[5][5];
-									break;
-								}
-						case 3:
-								{
-									choosingMap = false;
-									arena = new Character[6][6];
-									break;
-								}
-						case 4:
-								{
-									choosingMap = false;
-									arena = new Character[7][7];
-									break;
-								}
-						case 5:
-								{
-									choosingMap = false;
-									arena = new Character[8][8];
-									break;
-								}
-						case 6:
-								{
-									choosingMap = false;
-									arena = new Character[10][10];
+									arena = new String[4][4];
 									break;
 								}
 						default:
@@ -1660,7 +1532,7 @@ public class Main
 								}
 					}
 					
-					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, /*arena.length-1*/0, 2/*arena[arena.length-1].length-1*/));
+					enemies.add(new Character(name[randomName], characterClass, abilityName, ability, weapon, hp, armorClass, speed, arena.length-1, arena[arena.length-1].length-1));
 				}
 		}
 	
